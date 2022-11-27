@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Teampool-Just play and work with Teampool!</title>
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Teampool-Just play and work with Teampool!">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="assets/images/avatar/teamPool.png">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+
+	<!-- Plugins CSS -->
+	<link rel="stylesheet" type="text/css" href="assets/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+
+	<!-- Theme CSS -->
+	<link id="style-switch" rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	
+	<meta name ="google-signin-client_id" content="110133211517-0tcasjepokc7q5mm1hki32ljk52vtkcf.apps.googleusercontent.com">
+
+<script>
+	function enterkey(){
+		if (window.event.keyCode == 13) {
+ 
+             // 엔터키가 눌렸을 때 실행할 내용
+             console.log('enter key');
+			$('.warning').text('');
+			 let user_id = $('#exampleInputEmail1').val();
+		    let user_data={'user_id':user_id}
+			console.log(user_id);
+			 $.ajax({
+				 'url': '/login/showDataList',//2. ajax를 통해 라우터에 연결
+				 'type': 'post',
+				 'datatype': 'json',
+		         'data': user_data,
+				 'success': function (results) {
+					//5. back-end에서 데이터 받아오기
+					//console.log(results[0].data + "데이타전체?");
+					//6. 데이터를 출력하기
+					let output;
+					output = results.data[0];
+					console.log(output);
+
+					 
+					if(output == undefined){
+						$('#warning2').text('올바른 아이디를 입력하세요');
+					}
+					else{
+						let user_id;
+					user_id = output.user_id;
+					console.log(user_id);  //값을 못받아오고 있넹. title먼저 정의하고 가져와야됨. 그리고 한줄만 받아와도 인덱스0으로 가져오기.
+
+					let user_pw;
+					user_pw = output.user_pw;
+					console.log(user_pw);
+
+
+					//아래코드는 뭐지?
+					$('#user_id').text = '';
+					$('#user_pw').text = '';
+
+
+					//$('#user_id').append(user_id);
+					//$('#user_pw').append(user_pw);
+					 
+					
+					console.log('로그인 버튼 클릭');
+					let inputEmail = $('#exampleInputEmail1').val();
+					let inputPassword = $('#inputPassword5').val();
+
+					console.log(inputEmail);
+					console.log(inputPassword);
+					
+						let flag ;
+			
+						
+
+						if (inputEmail === output.user_id) {
+						   console.log("아이디 맞음");
+						   if(inputPassword === output.user_pw){
+							   console.log("비밀번호 맞음");
+						localStorage.setItem("user_name",inputEmail );
+							   flag = 0;
+							   location.href="main";
+							  
+							   
+							   
+						   }
+						   
+						   
+						   else{
+							   console.log("비밀번호 틀림");
+							   $('#warning2').text('올바른 비밀번호를 입력하세요');
+							   	
+							   flag = 1;
+						   }		
+						   
+						}
+						
+						else {
+						}
+
+						  console.log(flag);
+						
+						
+						
+						
+						
+
+
+
+						  // if (inputPassword === output[i].user_pw) {
+						  // //아이디랑 패스워드 둘다 일치하면 메인페이지로 이동해지기
+						  // console.log('오 둘다 일치함!');
+
+						  // //<a href="main_page.ejs">
+
+						  // }
+						  //  else {
+						  // $('#warning1').text('비밀번호가 다릅니다.확인해주세요!');
+						  // //flag =1;
+						  // console.log('아이디는 맞는데 비번만 틀림!');
+						  // }
+
+					   
+
+
+
+					
+					 
+						// if (flag===1){
+							
+						// 	if(output == undefined){
+						// 		console.log("id");
+						// 	}
+						// 	$('#warning2').text('올바른 로그인 정보를 입력하세요');
+							
+						// 	}
+					}
+					
+
+				}
+
+				});
+        }
+	}
+</script>
+<script>      
+   $(document).ready(function () {//1. 페이지가 실행되면
+         $('#btnJoin').click(function () {
+			 $('.warning').text('');
+			 let user_id = $('#exampleInputEmail1').val();
+		    let user_data={'user_id':user_id}
+			console.log(user_id,"유저아이디는?");
+			 $.ajax({
+				 'url': '/login/showDataList',//2. ajax를 통해 라우터에 연결
+				 'type': 'post',
+				 'datatype': 'json',
+		         'data': user_data,
+				 'success': function (results) {
+					//5. back-end에서 데이터 받아오기
+					console.log(results.data[0] + "데이타전체?");
+					//6. 데이터를 출력하기
+					let output;
+					output = results.data[0];
+					console.log(output);
+
+					let user_id;
+					user_id = output.user_id;
+					console.log(user_id);  //값을 못받아오고 있넹. title먼저 정의하고 가져와야됨. 그리고 한줄만 받아와도 인덱스0으로 가져오기.
+
+					let user_pw;
+					user_pw = output.user_pw;
+					console.log(user_pw);
+
+
+					//아래코드는 뭐지?
+					$('#user_id').text = '';
+					$('#user_pw').text = '';
+
+
+					//$('#user_id').append(user_id);
+					//$('#user_pw').append(user_pw);
+					 
+					
+					console.log('로그인 버튼 클릭');
+					let inputEmail = $('#exampleInputEmail1').val();
+					let inputPassword = $('#inputPassword5').val();
+
+					console.log(inputEmail);
+					console.log(inputPassword);
+					
+						let flag ;
+			
+						
+
+						if (inputEmail === output.user_id) {
+						   console.log("아이디 맞음");
+						   if(inputPassword === output.user_pw){
+							   console.log("비밀번호 맞음");
+						localStorage.setItem("user_name",inputEmail );
+							   flag = 0;
+							   location.href="main";
+							  
+							   
+							   
+						   }
+						   
+						   
+						   else{
+							   console.log("비밀번호 틀림");
+							   	
+							   flag = 1;
+						   }		
+						   
+						}
+						
+						else {
+							 console.log('아이디가 틀림요!');
+							
+							flag = 1;
+						}
+
+						  console.log(flag);
+						
+						
+						
+						
+						
+
+
+
+						  // if (inputPassword === output[i].user_pw) {
+						  // //아이디랑 패스워드 둘다 일치하면 메인페이지로 이동해지기
+						  // console.log('오 둘다 일치함!');
+
+						  // //<a href="main_page.ejs">
+
+						  // }
+						  //  else {
+						  // $('#warning1').text('비밀번호가 다릅니다.확인해주세요!');
+						  // //flag =1;
+						  // console.log('아이디는 맞는데 비번만 틀림!');
+						  // }
+
+					   
+
+
+
+					
+					 
+						if (flag===1){
+							
+							
+							$('#warning2').text('올바른 로그인 정보를 입력하세요');
+							
+							}
+
+				}
+
+				});
+         });
+      
+
+});
+
+
+
+</script>
+	
+	
+	
+	
+	
+	
+
+</head>
+
+<body>
+
+	
+	
+	
+<script>
+
+//처음 실행하는 함수
+function init() {
+	gapi.load('auth2', function() {
+		gapi.auth2.init();
+		options = new gapi.auth2.SigninOptionsBuilder();
+		options.setPrompt('select_account');
+        // 추가는 Oauth 승인 권한 추가 후 띄어쓰기 기준으로 추가
+		options.setScope('email profile openid https://www.googleapis.com/auth/user.birthday.read');
+        // 인스턴스의 함수 호출 - element에 로그인 기능 추가
+        // GgCustomLogin은 li태그안에 있는 ID, 위에 설정한 options와 아래 성공,실패시 실행하는 함수들
+		gapi.auth2.getAuthInstance().attachClickHandler('GgCustomLogin', options, onSignIn, onSignInFailure);
+	})
+}
+
+function onSignIn(googleUser) {
+	var access_token = googleUser.getAuthResponse().access_token
+	$.ajax({
+    	// people api를 이용하여 프로필 및 생년월일에 대한 선택동의후 가져온다.
+		url: 'https://people.googleapis.com/v1/people/me'
+        // key에 자신의 API 키를 넣습니다.
+		, data: {personFields:'birthdays', key:'AIzaSyCq_Iu6XK4WfpA6_xr7kiqzSndo33hTj0I', 'access_token': access_token}
+		, method:'GET'
+	})
+	.done(function(e){
+        //프로필을 가져온다.
+		var profile = googleUser.getBasicProfile();
+		console.log(profile)
+	})
+	.fail(function(e){
+		console.log(e);
+	})
+}
+function onSignInFailure(t){		
+	console.log(t);
+}
+</script>
+
+<script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+	
+	
+	
+	
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	<section class="p-0 d-flex align-items-center position-relative overflow-hidden">
+	
+		<div class="container-fluid">
+			<div class="row">
+				<!-- 왼쪽면 -->
+				<div class="col-12 col-lg-6 m-auto">
+					<div class="row my-5">
+						<div class="col-sm-10 col-xl-8 m-auto">
+							<!-- 타이틀 -->
+							<span class="mb-0 fs-1">👋</span>
+							<h1 class="fs-2">로그인 하기</h1>
+							<p class="lead mb-4">만나서 반가워요! 계정에 로그인하세요!</p>
+
+							<!-- Form START -->
+							<form onkeyup="enterkey();">
+								<!-- 이메일입력 -->
+								<div class="mb-4">
+									
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
+										<input type="email" onkeyup="enterkey();" class="form-control border-0 bg-light rounded-end ps-1" placeholder="아이디" id="exampleInputEmail1">
+									</div>
+									<div id="warning1" class="warning text-danger"></div>
+								</div>
+								<!-- 패스워드-->
+								<div class="mb-4">
+									
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+										<input type="password" onkeyup="enterkey();" class="form-control border-0 bg-light rounded-end ps-1" placeholder="비밀번호" id="inputPassword5">
+									</div>
+									
+									<div id="warning2" class="warning text-danger"></div>
+								</div>
+								<!-- 체크박스-->
+								<div class="mb-4 d-flex justify-content-between mb-4">
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input" id="exampleCheck1">
+										<label class="form-check-label" for="exampleCheck1">계정 기억하기</label>
+									</div>
+									<div class="text-primary-hover">
+										<a href="password_find" class="text-secondary">
+											<u>비밀번호를 잊으셨나요?</u>
+										</a>
+									</div>
+								</div>
+								<!-- 버튼-->
+								<div class="align-items-center mt-0">
+									<div class="d-grid">
+										<button class="btn btn-primary mb-0" type="button" id=btnJoin>로그인하기</button>
+									</div>
+									
+								</div>
+							</form>
+							<!-- Form END -->
+
+
+
+							<!-- Sign up link -->
+							<div class="mt-4 text-center ">
+								<span>계정이 없으신가요?<a href="signin1">    회원가입</a></span>
+							</div>
+						</div>
+					</div> <!-- Row END -->
+				</div>
+
+
+				<!-- 오른쪽면 -->
+				
+
+
+<div class="col-12 col-lg-6 d-md-flex align-items-center justify-content-center bg-primary bg-opacity-10 vh-lg-100">
+					<div class="p-3 p-lg-5">
+						<!-- Title -->
+						<div class="text-center">
+							<h2 class="fw-bold">원하는 프로젝트를 찾고
+팀원들을 구해보세요</h2>
+							<p class="mb-0 h6 fw-light">팀원들이 기다리고 있어요!</p>
+						</div>
+						<!-- SVG Image -->
+						<img src="assets/images/element/02.svg" class="mt-5" alt="">
+						<!-- Info -->
+						<div class="d-sm-flex mt-5 align-items-center justify-content-center">
+							<!-- Avatar group -->
+							<ul class="avatar-group mb-2 mb-sm-0">
+								<li class="avatar avatar-sm">
+									<img class="avatar-img rounded-circle" src="assets/images/avatar/profile1.png" alt="avatar">
+								</li>
+								<li class="avatar avatar-sm">
+									<img class="avatar-img rounded-circle" src="assets/images/avatar/profile2.png" alt="avatar">
+								</li>
+								<li class="avatar avatar-sm">
+									<img class="avatar-img rounded-circle" src="assets/images/avatar/profile3.png" alt="avatar">
+								</li>
+								<li class="avatar avatar-sm">
+									<img class="avatar-img rounded-circle" src="assets/images/avatar/profile4.png" alt="avatar">
+								</li>
+							</ul>
+							<!-- Content -->
+							<p class="mb-0 h6 fw-light ms-0 ms-sm-3">이미 3천명의 인원이 함께하고 있어요! 당신 차례에요!</p>
+						</div>
+					</div>
+				</div>
+
+
+
+
+			</div> <!-- Row END -->
+		</div>
+	</section>
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<!-- Bootstrap JS -->
+<script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Template Functions -->
+<script src="assets/js/functions.js"></script>
+
+
+	
+<!-- <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script>
+<script type="text/javascript">
+  
+  const naverLogin = new naver.LoginWithNaverId(
+   {
+    clientId: "TTIk1aaXVBTsJdLlqGkO",
+    callbackUrl: "https://test-qiiyr.run.goorm.io/login",
+    loginButton: {color: "green", type: 2, height: 40}
+    }
+   );
+  
+
+    naverLogin.init();
+    naverLogin.getLoginStatus(function (status) {
+      if (status) {
+          const nickName=naverLogin.user.getNickName();
+          const age=naverLogin.user.getAge();
+          const birthday=naverLogin.user.getBirthday();
+          if(nickName===null||nickName===undefined ){
+            alert("별명이 필요합니다. 정보제공을 동의해주세요.");
+            naverLogin.reprompt();
+            return ;  
+         }else{
+          setLoginStatus();
+         }
+	}
+    });
+    
+	
+
+    function setLoginStatus(){
+	  console.log(naverLogin.user);
+	  let naverlogin_data={
+		  'naver_id': naverLogin.user.id,
+		  'email': naverLogin.user.email,
+		  'nickname': naverLogin.user.nickname
+	  }
+	  let insertId;
+	  $.ajax({
+		  'url': '/login/naverlogindata',
+		  'type':'post',
+		  'datatype':'json',
+		  //'async': false,
+		  'data': naverlogin_data,
+		  //'setTimeout': 30000,
+		  'success':function(results){
+		  console.log("success");
+		  console.log(results.data);
+		  console.log(results.data.insertId);
+		  insertId = results.data.insertId;
+		  // 페이지 이동
+		  }
+	  }) -->
+		
+		 // let testdata = {
+		 // 'insertId':insertId
+		 // }
+		 // $.ajax({
+		 // 'url': '/login/testRouter',
+		 // 'type':'post',
+		 // 'datatype':'json',
+		 // //'async': false,
+		 // 'data': testdata,
+		 // //'setTimeout': 30000,
+		 // 'success':function(results){
+		 // console.log('성공');
+		 // }
+		 // })
+    }
+   
+
+	</script>
+</body>
+</html>

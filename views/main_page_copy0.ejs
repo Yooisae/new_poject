@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <title>Teampool-Just play and work with Teampool!</title>
+
+   <!-- Meta Tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <meta name="author" content="Webestica.com">
+   <meta name="description" content="Teampool-Just play and work with Teampool!">
+
+   <!-- Favicon -->
+   <link rel="shortcut icon" href="assets/images/avatar/teamPool.png">
+
+   <!-- Google Font -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+   <!-- Plugins CSS -->
+   <link rel="stylesheet" type="text/css" href="assets/vendor/font-awesome/css/all.min.css">
+   <link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+   <link rel="stylesheet" type="text/css" href="assets/vendor/tiny-slider/tiny-slider.css">
+   <link rel="stylesheet" type="text/css" href="assets/vendor/glightbox/css/glightbox.css">
+
+   <!-- Theme CSS -->
+   <link id="style-switch" rel="stylesheet" type="text/css" href="/assets/css/style.css">
+   
+   <!--CSS only-->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+   <!--JavaScript Bundle with Popper-->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <style>
+      .material-symbols-outlined {
+           font-variation-settings:
+           'FILL' 0,
+           'wght' 200,
+           'GRAD' -25,
+           'opsz' 40
+         }
+</style>
+        
+   <script>
+      function enterkey() {
+            if (window.event.keyCode == 13) {
+				window.event.preventDefault();
+               let search_input =  $('#search_input').val();
+            let search_data ={'search_input':search_input}
+               $.ajax({
+                  'url':'/main/searchKeyword', //2. ajax를 통해 라우터에 연결.** 1차적으로 js에 보내는 것 **-정의 느낌은 아님. js에 이미 주소 정의되어 있음 post로 
+                  'type': 'post',
+                  'datatype': 'json',
+                  'data':search_data,
+                  'success': function(results){
+                     
+                      if (results.flag==1){
+                            localStorage.setItem("keyword",search_input );
+                           location.href='search_page';
+                           console.log('검색성공');
+                              
+                            }else{
+                               console.log('검색실패');
+                            }
+                     
+               
+            }
+         });   
+      }
+	  }
+	   
+	   
+	   function alarmTitle(req,alarm_type){
+		   switch(alarm_type){
+			   case ALARM_TYPE.PROJECT_REQUEST:
+				   return '프로젝트 신청 -'+req.body.alarm.title;
+// 				   추가적인 케이스 만들어야 함!
+		   }
+	   }
+	  //  userAlarm.title=alarmTitle(req, alarm_type);
+	  //  userAlarm.content=alarmContent(req, alarm_type);
+	  //  userAlarm.url=alarmUrl(req,alarm_type);
+	  //  userAlarm.writer=req.user._id;
+	  // function alarmTitle(req,alarm_type){
+	  // switch(alarm_type){
+	  // case ALARM_TYPE.QUIZ_REQUEST:
+	  // return '프로젝트 참여 요쳥 -': req.body.alarm.title;
+	  // }
+	  // }
+	   
+   </script>
+   <!-- ajax -->
+   <script>
+       
+	   
+      //ajax
+      $(document).ready(function(){ //1.페이지가 실행되면
+		 localStorage.removeItem("keyword");
+         let user_id= window.localStorage.getItem("user_name");
+         
+         $('#startbtn').click(function () {
+            if(user_id==null){
+               window.confirm('로그인이 필요합니다!');
+            }else{
+               location.href='new_project_registration';
+            }
+            
+         });
+         
+         console.log(user_id);
+         if (user_id==null){
+            document.getElementById("head").style.display = 'none';
+            document.getElementById("no_login_head").style.display = 'block';
+            
+         }else{
+            document.getElementById("head").style.display = 'block';
+            document.getElementById("no_login_head").style.display = 'none';
+         }
+		  
+		  // 선택하는 카테고리 따라서 메인페이지 프로젝트들 바뀌는거   
+		     let inputTopic=$('#inputTopic').val();
+		     let inputType=$('#inputType').val();
+		     let inputDepart=$('#inputDepart').val()
+		     
+		   
+		     //지금은 값이 변해야지만 받아옴.
+			  $('#inputTopic').change(function(){
+					
+				    inputTopic = $(this).val();
+				    console.log("토픽값테스트"+inputTopic);
+				  
+			  });
+              $('#inputType').change(function(){
+				  
+				   inputType = $(this).val();
+				    console.log("유형값테스트"+inputType);
+			  });
+			    $('#inputDepart').change(function(){
+				   inputDepart = $(this).val();
+				    console.log("학부값테스트"+inputDepart);
+				  
+			  });
+		  let search_data={
+				'inputType' : inputType,
+				'inputDepart':inputDepart,
+				'inputTopic':inputTopic
+				
+			}
+		  
+		  $('#search_input_btn').click(function(){
+		
+            let search_input =  $('#search_input').val();
+            let search_data ={'search_input':search_input}
+               $.ajax({
+                  'url':'/main/searchKeyword', //2. ajax를 통해 라우터에 연결.** 1차적으로 js에 보내는 것 **-정의 느낌은 아님. js에 이미 주소 정의되어 있음 post로 
+                  'type': 'post',
+                  'datatype': 'json',
+                  'data':search_data,
+                  'success': function(results){
+                     
+                      if (results.flag==1){
+                            localStorage.setItem("keyword",search_input );
+                           location.href='search_page';
+                           console.log('검색성공');
+                              
+                            }else{
+                               console.log('검색실패');
+                            }
+                     
+               
+            }
+         });   
+            
+            
+         })
+		  
+		  $.ajax({
+			  
+            'url':'/main/testshowDataList', 
+            'type': 'post',
+			'data': search_data,
+            'datatype': 'json',         
+            'success': function(results){
+               // main.js에서 프로젝트 정보 불러오기
+               let data=results.data;
+               //console.log(data);
+               
+               $('#tableContent').text = '';
+               
+               //카테고리별 게시물 갯수 출력하기
+               let count1=0;
+              
+               $('#count1').text(data.length + '개의 프로젝트');
+               // $('#count2').text(count2 + '개의 프로젝트');
+               // $('#count3').text(count3 + '개의 프로젝트');
+               // $('#count4').text(count4 + '개의 프로젝트');
+               // $('#count5').text(count5 + '개의 프로젝트');
+               //카테고리별 게시물 갯수 출력하기 END
+               
+               //게시물 목록 출력하기 
+               //카테고리별로 1,2,3,4,5
+			
+               for (let i=0; i<data.length; i++){
+                  
+                  let tmp='';
+                  let agree_user='';
+                  if(data[i].agree_user){
+                     let aaa = data[i].agree_user.split(",");
+                     agree_user= aaa.length;
+                  }else{
+                     agree_user=0;
+                  }
+                  //이유는 모르겠는데 uploads폴더에 있는거는 안불러와지고 public에 있는건 불러와짐..
+                   $('#test_image').append(data[i].test_image);
+                  //console.log(data[i].test_image,"테스트 이미지 출력하기");
+                  
+                  tmp = tmp +'<div class="col-sm-6 col-lg-4 col-xl-3">' 
+                              +'<div class="card shadow h-100" id="card">'
+                              +   '<img id="test_image" src="' + data[i].test_image +'" style="width-auto; height:300px;" class="card-img-top" alt="course image">'
+                                 +   '<div class="card-body pb-0">'
+                                    + '<div class="d-flex justify-content-between mb-2">'
+                                 +'<div class="badge bg-purple bg-opacity-10 text-purple" id="tags">'+ '#' + data[i].tags +'</div>'
+                              +'</div>'
+                              +'<h5 class="card-title fw-normal" id="title">'+'<a href="/main/post/' + data[i].project_id + '">'+ data[i].title +'</a>'+'</h5>' 
+                              +'<p class="mb-0 text-truncate-5" id = "descript_S">'+ data[i].descript_S + '</p>'
+                              +'<div class="mt-3">' + '</div>'      
+                           +'</div>'
+                           +'<div class="card-footer pt-0 pb-3">'
+                              +'<div class="mt-3">' + '</div>'
+                                 +'<ul class="list-inline mb-0">'
+                                 +'<li class="list-inline-item me-0 small">'
+                  
+                  if (parseInt(agree_user+1) < data[i].team_max_num)
+                     if (data[i].status===1)
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-danger me-2">'+ ' 마감' +'</i>'+'</h6>'
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                     else
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-success small me-2">'+ ' 참여중인 인원' +'</i>'+'</h6>'
+                                 +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_present_num">' + parseInt(agree_user+1) + '</li>'
+                                       +'/' +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_max_num">'+ data[i].team_max_num +'</li>' 
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+
+                  else
+                     if (data[i].status===1)
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-danger me-2">'+ ' 마감' +'</i>'+'</h6>'
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                     else
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-danger small me-2">'+ ' 참여중인 인원' +'</i>'+'</h6>'
+                                 +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_present_num">' + parseInt(agree_user+1) + '</li>'
+                                       +'/' +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_max_num">'+ data[i].team_max_num +'</li>' 
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                  
+                  
+                     
+                  
+         
+
+               $('#card1').append(tmp);
+				  
+                  
+               }
+               //게시물 목록 출력하기 END      
+            }
+         });
+				 
+			
+		     
+			   
+
+		
+	   	 //우ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ아ㅏㅏㅏㅏ
+		$('#test_search').click(function(){
+			
+			$('#card1').empty();
+			let search_data={
+				'inputType' : inputType,
+				'inputDepart':inputDepart,
+				'inputTopic':inputTopic
+				
+			}
+			$.ajax({
+            'url':'/main/testshowDataList', 
+            'type': 'post',
+			'data': search_data,
+            'datatype': 'json',         
+            'success': function(results){
+               // main.js에서 프로젝트 정보 불러오기
+               let data=results.data;
+               //console.log(data);
+               
+               $('#tableContent').text = '';
+               
+               //카테고리별 게시물 갯수 출력하기
+               let count1=0;
+              
+               $('#count1').text(data.length + '개의 프로젝트');
+               // $('#count2').text(count2 + '개의 프로젝트');
+               // $('#count3').text(count3 + '개의 프로젝트');
+               // $('#count4').text(count4 + '개의 프로젝트');
+               // $('#count5').text(count5 + '개의 프로젝트');
+               //카테고리별 게시물 갯수 출력하기 END
+               
+               //게시물 목록 출력하기 
+               //카테고리별로 1,2,3,4,5
+			
+               for (let i=0; i<data.length; i++){
+                  
+                  let tmp='';
+                  let agree_user='';
+                  if(data[i].agree_user){
+                     let aaa = data[i].agree_user.split(",");
+                     agree_user= aaa.length;
+                  }else{
+                     agree_user=0;
+                  }
+                  //이유는 모르겠는데 uploads폴더에 있는거는 안불러와지고 public에 있는건 불러와짐..
+                   $('#test_image').append(data[i].test_image);
+                  //console.log(data[i].test_image,"테스트 이미지 출력하기");
+                  
+                  tmp = tmp +'<div class="col-sm-6 col-lg-4 col-xl-3">' 
+                              +'<div class="card shadow h-100" id="card">'
+                              +   '<img id="test_image" src="' + data[i].test_image +'" style="width-auto; height:300px;" class="card-img-top" alt="course image">'
+                                 +   '<div class="card-body pb-0">'
+                                    + '<div class="d-flex justify-content-between mb-2">'
+                                 +'<div class="badge bg-purple bg-opacity-10 text-purple" id="tags">'+ '#' + data[i].tags +'</div>'
+                              +'</div>'
+                              +'<h5 class="card-title fw-normal" id="title">'+'<a href="/main/post/' + data[i].project_id + '">'+ data[i].title +'</a>'+'</h5>' 
+                              +'<p class="mb-0 text-truncate-5" id = "descript_S">'+ data[i].descript_S + '</p>'
+                              +'<div class="mt-3">' + '</div>'      
+                           +'</div>'
+                           +'<div class="card-footer pt-0 pb-3">'
+                              +'<div class="mt-3">' + '</div>'
+                                 +'<ul class="list-inline mb-0">'
+                                 +'<li class="list-inline-item me-0 small">'
+                  
+                  if (parseInt(agree_user+1) < data[i].team_max_num)
+                     if (data[i].status===1)
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-danger me-2">'+ ' 마감' +'</i>'+'</h6>'
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                     else
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-success small me-2">'+ ' 참여중인 인원' +'</i>'+'</h6>'
+                                 +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_present_num">' + parseInt(agree_user+1) + '</li>'
+                                       +'/' +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_max_num">'+ data[i].team_max_num +'</li>' 
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+
+                  else
+                     if (data[i].status===1)
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-danger me-2">'+ ' 마감' +'</i>'+'</h6>'
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                     else
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-danger small me-2">'+ ' 참여중인 인원' +'</i>'+'</h6>'
+                                 +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_present_num">' + parseInt(agree_user+1) + '</li>'
+                                       +'/' +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_max_num">'+ data[i].team_max_num +'</li>' 
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                  
+                  
+                     
+                  
+         
+
+               $('#card1').append(tmp);
+				  
+                  
+               }
+               //게시물 목록 출력하기 END      
+            }
+         });
+			
+			
+		});
+		  
+         
+         
+         $('#logout').click(function () {
+            
+            
+            localStorage.removeItem("user_name");
+            clear()
+
+         })
+      });
+      
+      $(document).ready(function(){
+         let user_id= window.localStorage.getItem("user_name");
+         let user_data={'user_id':user_id}
+         $.ajax({
+            'url':'/main/showProfile', //2. ajax를 통해 라우터에 연결.** 1차적으로 js에 보내는 것 **-정의 느낌은 아님. js에 이미 주소 정의되어 있음 post로 
+            'type': 'post',
+            'datatype': 'json',
+            'data':user_data,
+            'success': function(results){
+                let output = results.data[0];
+               //console.log(output);
+                let image;
+               if (output.user_image){
+                  console.log("이미지 있음");
+                  image= output.user_image;
+                   $('#photo').append(image);
+                    document.getElementById('photo').src= image;
+               }else{
+                  console.log("이미지 없음");
+                   image = "/images/default-profile.jpg";
+                   $('#photo').append(image);
+                    document.getElementById('photo').src= image;
+               }
+               
+               
+            }
+         });   
+         
+         $('#new_projectbtn').click(function(){
+            if(user_id==null){
+                  window.confirm('로그인이 필요합니다!');
+               }else{
+                  location.href='new_project_registration';
+               }
+         });
+         
+      });
+   </script>
+</head>
+   
+<body>
+   
+   
+   <!-- Header START -->
+   <header id ="head" class="navbar-light navbar-sticky" style="display:none;">
+      <!-- Logo Nav START -->
+      <nav class="navbar navbar-expand-xl">
+         <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="main">
+               <img class="light-mode-item navbar-brand-item" style="width:80px;height:60px" src="assets/images/avatar/teamPool.png" alt="logo">
+               <img class="dark-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+               data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+               aria-label="Toggle navigation">
+               <span class="navbar-toggler-animation">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+               </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+               <!-- Nav Main menu START -->
+               <ul class="navbar-nav navbar-nav-scroll mx-auto">
+               </ul>
+               <!-- Nav Main menu END -->
+
+               <!-- Top bar right START -->
+               <div class="ms-xl-auto">
+                  <ul class="navbar-nav flex-row align-items-center">
+					  <!-- Notification Start	-->
+					  <li class="nav-item ms-2 ms-md-3 dropdown">
+					  	<a class="avatar avatar-sm p-0" id="notificationDropdown" role="button"
+						   data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown"
+						   aria-expanded="false">
+							<!-- <thead>
+								<tr>
+									<th scope="col" class="border-0 rounded-start ">13개의 알림</th>
+								</tr>
+							</thead> -->
+                           <img id="notification" class="avatar-img rounded-circle" src="assets/images/alarm/notification.png"
+                              alt="avatar">
+                        </a> 
+						<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
+                           aria-labelledby="profileDropdown">
+                           <!-- Alarm Contents -->
+							<thead><tr>
+								<th scope="col" class="border-0 rounded-start ">13개의 알림</th>
+							</tr></thead>
+                           <!-- <li><a class="dropdown-item" href="my_profile_view">
+							   <span class="material-symbols-outlined">person_filled</span>프로젝트에 참여 요청을 했습니다</a>
+							</li> -->
+							<td>
+							<h6 class="mb-0 "><a href="my_participating_project" class="stretched-link ">김찬님이 프로젝트 참여를요청했어요!</a></h6>
+							<h6 class="mb-0 "><a href="#" class="stretched-link ">민재님이 프로젝트 참여를요청했어요!</a></h6>
+							</td>
+                        </ul>
+					  </li>
+
+                     <!-- Profile dropdown START -->
+                     <li class="nav-item ms-2 ms-md-3 dropdown">
+                        <!-- Avatar -->
+                        <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button"
+                           data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                           <img id="photo" class="avatar-img rounded-circle" src="assets/images/avatar/pooh.jpeg"
+                              alt="avatar">
+                        </a>
+
+                        <!-- Profile dropdown START -->
+                        <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
+                           aria-labelledby="profileDropdown">
+
+                           <!-- Links -->
+                           
+                           <li><a class="dropdown-item" href="my_profile_view"><span
+                                     class="material-symbols-outlined">person_filled</span> 내 정보 보기</a></li>
+                           <li><a class="dropdown-item" href="my_profile_setting"><span
+                                     class="material-symbols-outlined">edit_square</span> 내 정보 수정</a></li>
+                           <li><a class="dropdown-item" href="my_project_setting"><span
+                                     class="material-symbols-outlined">web</span> 내가 개설한 프로젝트</a></li>
+                           <li><a class="dropdown-item" href="my_participating_project"><span
+                                     class="material-symbols-outlined">front_hand</span> 나의 참여 프로젝트</a></li>
+                           <li><a class="dropdown-item" href="interest"><span
+                                     class="material-symbols-outlined">bookmarks</span> 나의 관심 프로젝트</a></li>
+                              
+                           <li>
+                              <hr class="dropdown-divider">
+                           </li>
+                           <li><a id="logout" class="dropdown-item bg-danger-soft-hover" href="login"><i
+                                    class="bi bi-power fa-fw me-2"></i>로그아웃</a></li>
+                        </ul>
+                        <!-- Profile dropdown END -->
+                     </li>
+                     <!-- Profile dropdown END -->
+                  </ul>
+               </div>
+               <!-- Top bar right END -->
+            </div>
+         </div>
+      </nav>
+   
+      <!-- Logo Nav END -->
+   </header>
+   <!-- Header END -->
+      
+   <header id ="no_login_head" class="navbar-light navbar-sticky" style="display:none;">
+      <!-- Logo Nav START -->
+      <nav class="navbar navbar-expand-xl">
+         <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="main">
+               <img class="light-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+               <img class="dark-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+               data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+               aria-label="Toggle navigation">
+               <span class="navbar-toggler-animation">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+               </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+               <!-- Nav Main menu START -->
+               <ul class="navbar-nav navbar-nav-scroll mx-auto">
+               </ul>
+               <!-- Nav Main menu END -->
+
+               <!-- Top bar right START -->
+               <div class="ms-xl-auto">
+                  <ul class="navbar-nav flex-row align-items-center">
+
+                     
+                        <!-- Avatar -->
+                        <a  href="login" id="profileDropdown" role="button"
+                           data-bs-auto-close="outside" data-bs-display="static"
+                           aria-expanded="false">
+                           로그인/회원가입
+                        </a>
+
+                        
+                  
+                  </ul>
+               </div>
+               <!-- Top bar right END -->
+            </div>
+         </div>
+      </nav>
+      <!-- Logo Nav END -->
+   </header>
+   <!-- Header END -->
+
+   <!-- **************** MAIN CONTENT START **************** -->
+   <main>
+
+      <!-- =======================
+Main Banner START -->
+      <section class="position-relative">
+
+         <!-- SVG decoration -->
+         <figure class="position-absolute top-50 end-0 translate-middle-y mt-n8">
+            <svg class="rtl-flip" width="1360.5px" height="793px" viewBox="0 0 1360.5 793"
+               style="enable-background:new 0 0 1360.5 793;" xml:space="preserve">
+               <path class="fill-primary opacity-1"
+                  d="M33.5,766.3c75.3-24.2,124.5-20.3,155.2-62.8c35.4-49,53.1-184.7,138-191.2s100.9,55.6,208.8-21.2 s44.5-134.3,166.4-174.9c121.8-40.6,177,80.1,279.6,36s122.1-248.4,178.8-290.9c49.3-37,171.2-56.7,200.2-61.1v793H33.5 C33.5,793-41.9,790.4,33.5,766.3z" />
+            </svg>
+         </figure>
+
+      <!-- about -->
+         <div class="container position-relative mt-0 mt-sm-5 pt-5">
+            <div class="row align-items-center">
+               <div class="col-md-5">
+                  <!-- Title -->
+                  <h1 class="mb-3">원하는 프로젝트를 공유하고<br>팀원들을 구해보세요</h1>
+                  <h6 class="mb-3">프로젝트에 참여하고 싶다면 아래로 스크롤하세요!</h6>
+                  <!-- Button -->
+                  <a id="startbtn" href="#" class="btn btn-primary">시작하기</a>
+               </div>
+               <div class="col-md-7">
+                  <!-- Image -->
+                  <img src="assets/images/element/newBackground.png" alt="">
+               </div>
+            </div>
+         </div>
+      </section>
+      <!-- =======================
+Main Banner END -->
+
+      <!-- ======================= About START -->
+      <section class="pb-0 pb-lg-5">
+      </section>
+
+      <!-- ======================= 
+Popular course START -->
+      <section>
+         <div class="container">
+            <!-- Title -->
+            <div class="row mb-4">
+               <div class="col-lg-8 mx-auto text-center">
+                  <!--검색-->
+                   <form class="d-flex" onsubmit="return false">
+                     <input id="search_input" onkeyup="enterkey();" style="border-radius: 20px 20px 20px 20px" class="mb-5 form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <a id="search_input_btn" href="#" class="mb-5 btn btn-outline-primary" type="button"><i class="bi bi-search"></i></a>
+                   </form>
+                  
+                  <!------->
+                  <h2 class="fs-1">프로젝트 찾기</h2>
+                  <p class="mb-0">원하는 카테고리를 선택하고 프로젝트를 신청 및 등록 해보세요.</p>
+                  
+               </div>
+            </div>
+            <!-- 제목 끝-->
+		<div class="row g-4">
+			
+			
+						
+			<div class="col-lg-2">
+	
+				<select  id="inputType" class="form-select" type='text' >
+				  <option value="1" selected>프로젝트</option>
+				  <option value="2">스터디</option>
+				 
+				</select>
+			</div> 	 
+			
+			 <div class="col-lg-2">
+			 
+                              <select id="inputTopic" name="inputTopic" class="form-select"  type='text'>
+                                     <option value='0' selected>모집 분야(전체)</option>
+								     <option value='1'  >경영</option>
+									 <option value='2'  >디자인</option>
+									 <option value='3'  >개발</option>
+									 <option value='4'  >기획</option>
+									 <option value='5'  >데이터 분석</option>
+									 <option value='6'  >영상</option>
+									 <option value='7'  >졸업과제(캡스톤/디그리)</option>
+									 <option value='8'  >자격증</option>
+									 <option value='9'  >창업</option>
+									 <option value='10'  >외주</option>
+									 <option value='11'  >음악</option>
+									 <option value='12'  >기타</option>
+                </select>
+			  
+			</div>
+				
+			
+		  <div class="col-lg-2">
+				
+			
+			 <select id="inputDepart" class="form-select" type='text' >
+				  <option value="0" selected>학부 선택(전체)</option>
+				  <option value="1">글로벌리더십학부</option>
+				  <option value="2">창의융합교육원(자연과학)</option>
+				  <option value="3">창의융합교육원(인문사회)</option>
+				 <option value="4">창의융합교육원(공학)</option>
+				 <option value="6">국제어문학부</option>
+				 <option value="7">커뮤니케이션학부</option>
+				 <option value="8">경영경제학부</option>
+				 <option value="9">법학부</option>
+				 <option value="10">상담심리사회복지학부</option>
+				 <option value="11">생명과학부</option>
+				 <option value="12">ICT창업학부</option>
+				 <option value="13">AI융합교육원(공학)</option>
+				 <option value="14">AI융합교육원(자연과학)</option>
+				 <option value="15">전산전자공학부</option>
+				 <option value="16">기계제어공학부</option>
+				 <option value="17">공간환경시스템공학부</option>
+				 <option value="18">콘텐츠융합디자인학부</option>
+				 
+				</select>
+						
+			 
+		  </div>
+			
+			<button class="col-lg-2" id="test_search">
+				검색
+			</button>
+			 </div>
+			
+             
+            <!-- Tabs START -->
+            <!-- <ul class="nav nav-pills nav-pills-bg-soft justify-content-sm-center mb-4 px-3" id="course-pills-tab"
+               role="tablist"> -->
+               <!-- Tab item -->
+               <!-- <li class="nav-item me-2 me-sm-5">
+                  <button class="nav-link mb-2 mb-md-0 active" id="course-pills-tab-1" data-bs-toggle="pill"
+                     data-bs-target="#course-pills-tabs-1" type="button" role="tab"
+                     aria-controls="course-pills-tabs-1" aria-selected="false">디자인</button>
+               </li> -->
+               <!-- Tab item -->
+               <!-- <li class="nav-item me-2 me-sm-5">
+                  <button class="nav-link mb-2 mb-md-0" id="course-pills-tab-2" data-bs-toggle="pill"
+                     data-bs-target="#course-pills-tabs-2" type="button" role="tab"
+                     aria-controls="course-pills-tabs-2" aria-selected="false">프로그래밍</button>
+               </li> -->
+               <!-- Tab item -->
+               <!-- <li class="nav-item me-2 me-sm-5">
+                  <button class="nav-link mb-2 mb-md-0" id="course-pills-tab-3" data-bs-toggle="pill"
+                     data-bs-target="#course-pills-tabs-3" type="button" role="tab"
+                     aria-controls="course-pills-tabs-3" aria-selected="false">영상</button>
+               </li> -->
+               <!-- Tab item -->
+               <!-- <li class="nav-item me-2 me-sm-5">
+                  <button class="nav-link mb-2 mb-md-0" id="course-pills-tab-4" data-bs-toggle="pill"
+                     data-bs-target="#course-pills-tabs-4" type="button" role="tab"
+                     aria-controls="course-pills-tabs-4" aria-selected="false">경영/창업</button>
+               </li> -->
+               <!-- Tab item -->
+               <!-- <li class="nav-item me-2 me-sm-5">
+                  <button class="nav-link mb-2 mb-md-0" id="course-pills-tab-5" data-bs-toggle="pill"
+                     data-bs-target="#course-pills-tabs-5" type="button" role="tab"
+                     aria-controls="course-pills-tabs-5" aria-selected="false">경제</button>
+               </li>
+            </ul> -->
+            <!-- Tabs END -->
+
+            <!--새 프로젝트 틍록-->
+            <div class="d-sm-flex justify-content-sm-between align-items-center mb-4">
+               <h5 class="mb-2 mb-sm-0"></h5>
+               <a id="new_projectbtn" href="#" class="btn btn-outline-primary mb-0">+ 새로운 모임 등록</a>
+            </div>
+            <!--새 프로젝트 틍록 끝-->
+
+            
+            <!-- Tabs content START 여기서부터  -->
+            <div class="tab-content" id="course-pills-tabContent">
+               <!--#개의 프로젝트-->
+            <!-- Content 1 START -->
+               
+               <div class="tab-pane fade show active" id="course-pills-tabs-1" role="tabpanel"
+                  aria-labelledby="course-pills-tab-1">
+                  <!--#개의 프로젝트-->
+                  <div class="d-sm-flex justify-content-sm-between align-items-center mb-4">
+                     <h5 class="mb-2 mb-sm-0" id="count1"></h5> <!--프로젝트 카운트수-->
+                  </div>
+                  <div class="row g-4" id = 'card1'>
+                     
+                  </div> <!-- Row END -->
+               </div>
+               <!-- Content1 END 여기까지만 신경쓰자 -->
+               
+               
+               <!-- Content2 START -->
+               <div class="tab-pane fade" id="course-pills-tabs-2" role="tabpanel"
+                  aria-labelledby="course-pills-tab-2">
+                                    <!--#개의 프로젝트-->
+                  <div class="d-sm-flex justify-content-sm-between align-items-center mb-4">
+                     <h5 class="mb-2 mb-sm-0" id="count2"></h5> <!--프로젝트 카운트수-->
+                  </div>
+                  <div class="row g-4" id='card2'>
+                     
+                  </div>
+               </div>
+               <!-- Content2 END -->
+
+               <!-- Content3 START -->
+               <div class="tab-pane fade" id="course-pills-tabs-3" role="tabpanel"
+                  aria-labelledby="course-pills-tab-3">
+                                    <!--#개의 프로젝트-->
+                  <div class="d-sm-flex justify-content-sm-between align-items-center mb-4">
+                     <h5 class="mb-2 mb-sm-0" id="count3"></h5> <!--프로젝트 카운트수-->
+                  </div>
+                  <div class="row g-4" id='card3'>
+                     
+                  </div>
+               </div>
+               <!-- Content3 END -->
+
+               <!-- Content4 START -->
+               <div class="tab-pane fade" id="course-pills-tabs-4" role="tabpanel"
+                  aria-labelledby="course-pills-tab-4">
+                                    <!--#개의 프로젝트-->
+                  <div class="d-sm-flex justify-content-sm-between align-items-center mb-4">
+                     <h5 class="mb-2 mb-sm-0" id="count4"></h5> <!--프로젝트 카운트수-->
+                  </div>
+                  <div class="row g-4" id='card4'>
+                     
+                  </div>
+               </div>
+               <!-- Content4 END -->
+
+               <!-- Content5 START -->
+               <div class="tab-pane fade" id="course-pills-tabs-5" role="tabpanel"
+                  aria-labelledby="course-pills-tab-5">
+                                    <!--#개의 프로젝트-->
+                  <div class="d-sm-flex justify-content-sm-between align-items-center mb-4">
+                     <h5 class="mb-2 mb-sm-0" id="count5"></h5> <!--프로젝트 카운트수-->
+                  </div>
+                  <div class="row g-4" id='card5'>
+                     
+                  </div>
+               </div>
+               <!-- Content5 END -->
+            </div>
+            <!-- Tabs content END -->
+         </div>
+         
+      </section>
+      <!-- =======================
+Popular course END -->
+
+   </main>
+   <!-- **************** MAIN CONTENT END **************** -->
+
+   <!-- Back to top -->
+   <div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+   <!-- Bootstrap JS -->
+   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+   <!-- Vendors -->
+   <script src="assets/vendor/tiny-slider/tiny-slider.js"></script>
+   <script src="assets/vendor/glightbox/js/glightbox.js"></script>
+   <script src="assets/vendor/purecounterjs/dist/purecounter_vanilla.js"></script>
+
+   <!-- Template Functions -->
+   <script src="assets/js/functions.js"></script>
+
+</body>
+
+</html>

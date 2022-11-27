@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Teampool-Just play and work with Teampool!</title>
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Teampool-Just play and work with Teampool!">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="assets/images/avatar/teamPool.png">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+
+	<!-- Plugins CSS -->
+	<link rel="stylesheet" type="text/css" href="assets/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/choices/css/choices.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/glightbox/css/glightbox.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/quill/css/quill.snow.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/stepper/css/bs-stepper.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/overlay-scrollbar/css/OverlayScrollbars.min.css">
+
+	<!-- Theme CSS -->
+	<link id="style-switch" rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	
+	
+	
+	<script>
+    	$(document).ready(function(){
+			
+			
+			
+			
+    		//var getCheck = RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^*()\-_=+\\\|\[\]{};:\'",.<>\/?]).{8,16}$/);
+                $('#btnJoin2').click(function(){
+					$('.warning').text('');
+					let nickname = $('#exampleInputNickname').val();
+					let data ={
+						'nickname':nickname
+					}
+					$.ajax({
+							 'url': 'signin2/checkNickname',
+							 'type':'post',
+							 'datatype':'json',
+							 'data': data,
+							 'success':function(results){
+								 console.log(results.data[0])
+								 var isEmpty = function(value){
+									if( value == "" || value == null || value == undefined || ( value != null && typeof value == "object" && !Object.keys(value).length ) ){             
+									  return true                 
+									}else{            
+									  return false      
+
+									}
+
+								  };
+								 if(isEmpty(results.data[0])==false){
+									 console.log('닉네임 중복');
+									 	$('#warning1').text('닉네임이 이미 존재합니다!');
+									 
+								 }else{
+									 console.log('닉네임 없음');
+									 $('#warning4').text('사용가능한 닉네임입니다!');
+								 }
+							
+							 }
+								  
+						 });
+					
+					
+					
+					
+				});
+			
+			
+    			console.log('start');
+				console.log("signin2");
+  				$('#btnJoin').click(function(){
+
+  				 		$('.warning').text('');
+  				 		console.log('회원가입 버튼 클릭');
+					
+						let flag=0 ;
+					
+					let nickname = $('#exampleInputNickname').val();
+					let project = $('#inputProject').val();
+				    project= ''+project;	
+				   console.log("이것은"+project);
+					
+				   let mbti = $('#inputMbti').val();
+				   mbti= ''+mbti;	
+				   console.log("이것은 mbti -> "+mbti);
+					
+			
+					
+					
+					if (nickname.length>8){
+							 console.log('8자리이상임!!!!!!!!!!!');
+						$('#warning9').text('8자리 이하로 입력하세요!');
+						//  flag =1;
+						
+					}
+					
+					else{
+						
+						//nickname = $('#exampleInputNickname').val();
+					   
+					}
+					if (nickname){
+   				 	console.log('nickname okay');
+					console.log("이것은 nickname -> "+nickname);
+   				 }else{ 
+   				 	console.log('no nickname');
+   				 	$('#warning1').text('닉네임을 입력하지 않았습니다!');
+					 flag =1;
+   				 }
+					
+				
+				if (project){
+   				 	
+					console.log("이것은 project -> "+project);
+   				 }else{ 
+   				 	
+   				 	$('#warning2').text('직책을 선택하지 않았습니다!');
+					 flag =1;
+   				 }
+				
+				if (mbti){
+   				 	
+					console.log("이것은 mbti -> "+mbti);
+   				 }else{ 
+   				 	
+   				 	$('#warning3').text('MBTI를 입력하지 않았습니다!');
+					 flag =1;
+   				 }
+						
+
+   				 
+   				  //pw1 = $('#inputPassword5').val();
+					
+			 
+   				//nickname = $('#exampleInputNickname').val();//student ID를 이메일로바꿔야함 우선 
+   				console.log(nickname);
+
+   			
+					
+			
+					
+					
+				
+
+				
+					
+					/*
+   				 if (pw1 === pw2){
+   				 	console.log('password okay');
+   				 }else{ 
+					console.log('password unmatched');
+						$('#warning2').text('패스워드가 다릅니다.확인해주세요!');
+					    flag =1;
+					}
+
+					if(pw1&&pw2){
+
+					}else{
+					console.log('password중 하나가 없어요');
+					$('#warning2').text('패스워드 중 하나가 없어요');
+						 flag =1;
+					}
+					
+					
+					
+					if (interests){
+					console.log('약관 선택됐어요');
+
+					}else{
+					console.log('약관 선택 안 됐어요');
+					$('#warning3').text('약관에 동의해주세요!');
+						 flag =1;
+
+
+					}
+
+					*/
+							var studentID = sessionStorage.getItem("studentID");
+					var pw1 = sessionStorage.getItem("pw1");
+					var interests = 1
+					console.log('불러오는거'+studentID);
+					console.log('불러오는거'+pw1);
+					console.log('불러오는거'+interests);
+					
+					
+					
+				
+					let data = {
+									'studentID':studentID,
+									'pw1':pw1,
+									'interests':interests,
+									'mbti':mbti,
+									'nickname':nickname,
+									'project':project,
+									
+							   }
+					//error가 없으면...
+					
+					
+					
+					
+			
+					
+					//실행 안됨
+   					if (flag == 0){ //flag가 1일때 되는데?
+						 $.ajax({
+							 'url': 'signin2/interfaceUpdate2',
+							 'type':'post',
+							 'datatype':'json',
+							 'data': data,
+							 'success':function(results){
+								 console.log(results.message);
+								console.log('dasdasdadadasdsa');
+								  console.log(results.flag);
+								 if (results.flag==1){
+									  console.log('성공적으로 저장');
+									 $('#results').text('성공적으로 저장되었습니다.');
+									location.href="signin_success";
+							}
+								 else{
+									 $('#results').text('실패했습니다.');
+									   console.log('실패적으로 저장');
+									   console.log(studentID,pw1,interests,nickname,mbti,project);
+								 }
+							 }
+								  
+						 });
+						
+				 	}
+  		});
+			
+			
+			
+});
+    </script>
+	
+
+</head>
+
+<body>
+
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    <!-- Page content START -->
+    <div class="page-content">
+        <!-- Page main content START -->
+        <div class="page-content-wrapper border">
+            <h1 class="h3 mb-3"></h1>
+            <!-- Card START -->
+            <div class="card border rounded-3 mb-5">
+                <div id="stepper" class="bs-stepper stepper-outline">
+                    <!-- Card header -->
+                    <div class="card-header bg-transparent border-bottom px-lg-12">
+                        <!-- Step Buttons START -->
+                        <div class="bs-stepper-header" role="tablist">
+                            <!-- Step 1 -->
+                            <div class="step" data-target="#step-1">
+                                <div class="d-grid text-center align-items-center">
+                                    <button type="button" class="btn btn-link step-trigger mb-0" role="tab" id="steppertrigger1" aria-controls="step-1">
+                                        <span class="bs-stepper-circle">★</span>
+                                    </button>
+                                    <h6 class="bs-stepper-label d-none d-md-block"></h6>
+                                </div>
+                            </div>
+                            <div class="line"></div>	
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-7  m-auto">
+                        <div class="row mb-12">
+                            <div class="col-sm-10 col-xl-8 m-auto">
+                                <h2>원하는 닉네임을 입력해보세요!</h2>
+                                <p class="lead mb-4">프로필 수정에서 언제든지 변경이 가능합니다.</p>
+                                <!-- Form START -->
+                                <form>
+                                    <!-- Email -->
+                                    <div class="mb-4">
+                                        
+                                        <label for="exampleInputNickname" class="form-label">닉네임</label>
+                                        <div class="input-group input-group-lg">
+                                            <span class="input-group-text bg-light rounded-start border- text-secondary px-3"></span>
+                                            <input type="email" class="form-control border-1 bg-light rounded-end ps-1" placeholder="" id="exampleInputNickname">
+                                            <button class="btn btn-primary mb-0" type="button" id="btnJoin2"> 중복확인</button>
+                                        </div>
+                                        <div id="passwordHelpBlock" class="form-text">
+                                            닉네임은 8자리 이하여야 합니다.
+                                        </div>
+                                        <div id="warning1" class="warning text-danger"></div>
+                                        <div id="warning4" class="warning text-success"></div>
+                                    </div>
+                                </form>
+                                <!-- Form1 END -->
+                                <!-- 직책선택 -->
+                                <!-- <hr><br><br> -->
+                                <h2>선호하는 포지션과 MBTI를 선택해 주세요!</h2>
+                                <div class="card-body px-1 px-sm-4">
+                                    <!-- Step content START -->
+                                    <div class="bs-stepper-content">
+                                        <form onsubmit="return false">
+                                            <!-- Step 1 content START -->
+                                            <div id="step-1" role="tabpanel" aria-labelledby="steppertrigger1">
+                                                <div class="row g-4">
+                                                    <!-- Language -->
+                                                    <div class="col-md-6">
+                                                        <label for="inputProject" class="form-label">선호 포지션</label>
+                                                        <select id= "inputProject" class="form-select js-choice border-0 z-index-9 bg-transparent" multiple="multiple" aria-label=".form-select-sm" data-max-item-count="3" data-remove-item-button="true">
+                                                            <option value="">--복수선택---</option>
+                                                            <option>개발자</option>
+                                                            <option>디자이너</option>
+                                                            <option>프로젝트매니저</option>
+                                                            <option>전략기획자</option>
+                                                            <option>어드바이저</option>
+															
+                                                        </select>
+														<div class="form-text">선택 또는 직접입력하고 enter키를 누르세요!</div>
+                                                        <div id="warning2" class="warning text-danger"></div>
+                                                    </div>
+                                                    <!-- Course level -->
+                                                    <div class="col-md-6">
+                                                        <label for= "inputMbti" class="form-label">MBTI</label>
+                                                        <input id="inputMbti"class="form-control" aria-label=".form-select-sm" data-search-enabled="false" data-remove-item-button="true">
+                                                    <div id="warning3" class="warning text-danger"></div>
+                                                    </div>
+													<!-- Course level END -->
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="align-items-center mt-0">
+                            <div class="d-grid">
+                                        <!-- Button -->
+                                <button class="btn btn-primary btn-sm col-6 mx-auto" type="button" id="btnJoin"> 회원가입완료</button>
+                            </div>
+                            <div id="results"> </div>
+                        </div>
+                    </div>
+                    <!-- Card body END -->
+                </div>
+            </div>
+            <!-- Card END -->
+        </div>
+        <!-- Page main content END -->
+    </div>
+    <!-- Page content END -->
+</main>
+    <!-- **************** MAIN CONTENT END **************** -->
+
+
+
+
+
+<!-- Bootstrap JS -->
+<script src="/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Vendors -->
+<script src="/assets/vendor/choices/js/choices.min.js"></script>
+<script src="/assets/vendor/glightbox/js/glightbox.js"></script>
+<script src="/assets/vendor/quill/js/quill.min.js"></script>
+<script src="/assets/vendor/stepper/js/bs-stepper.min.js"></script>
+<script src="/assets/vendor/overlay-scrollbar/js/overlayscrollbars.min.js"></script>
+
+<!-- Template Functions -->
+<script src="/assets/js/functions.js"></script>
+
+</body>
+</html>

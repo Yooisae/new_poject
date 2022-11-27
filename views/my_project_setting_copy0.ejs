@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Teampool-Just play and work with Teampool!">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="assets/images/avatar/teamPool.png">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+		
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Gugi&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+		
+	<!-- Plugins CSS -->
+	<link rel="stylesheet" type="text/css" href="/assets/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/vendor/bootstrap-icons/bootstrap-icons.css">
+	<link rel="stylesheet" type="text/css" href="/assets/vendor/tiny-slider/tiny-slider.css">
+	<link rel="stylesheet" type="text/css" href="/assets/vendor/glightbox/css/glightbox.css">
+
+	<!-- Theme CSS -->
+	<link id="style-switch" rel="stylesheet" type="text/css" href="/assets/css/style.css">
+	
+	<!--CSS only-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+	<!--JavaScript Bundle with Popper-->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<!-- icon -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<base href = "/">
+	<!-- <style>
+		.material-symbols-outlined {
+		  font-variation-settings:
+		  'FILL' 0,
+		  'wght' 400,
+		  'GRAD' 0,
+		  'opsz' 48
+		}
+	</style> -->
+	
+	<style>
+		body{
+			font-family: 'Noto Sans KR';
+		}
+		h6, p, button, tr{
+			font-family: "Noto Sans KR"; 
+		}
+	</style>
+
+		<script>
+			 $(document).ready(function(){ //1. 페이지가 실행되면
+						let id;
+						let flag = 0;
+				 		let num;
+				 		let user_array = [];
+						
+						 //resolve에 넣으면 성공했다는 것.
+						 function ajax_function(){   
+							 return new Promise(function(resolve, reject){
+								let user_id = localStorage.getItem("user_name");
+								 console.log(user_id);
+								//id = 'jicong';
+								 let data = {
+									'id': user_id
+									
+								}
+								 if (flag == 0){
+									 $.ajax({
+										 'url': '/my_project_setting/proloadDataList',
+										 'type':'post',
+										 'datatype':'json',
+										 //'async': false,
+										 'data': data,
+										 //'setTimeout': 30000,
+										 'success':function(results){
+											 //console.log(results.data);
+											 let pro_num = results.data[0].register_project.split(",");
+											 let len = pro_num.length;
+											 num = pro_num;
+											 //console.log(len);
+											 resolve(pro_num);
+											 
+												}
+											 }) 
+										 }
+									 });
+
+								}
+								       
+
+						 function firstAjax(num){    
+							 return new Promise(function(resolve, reject){
+								 console.log('첫번째 실행');
+								 //console.log(num);
+								 if (num == ''){
+									 $('#num_of_pro').append('0개의 프로젝트');
+								 }
+								 else {
+									 $('#num_of_pro').append( num.length +'개의 프로젝트');
+									 for (let i = 0; i < num.length; i++) {
+										(function (i) {
+										  let data1 = {
+											  'pro_id' : num[i]
+										  }
+										  $.ajax({
+											'url': '/my_project_setting/proList',
+											 'type':'post',
+											  //'async': false,
+											 'datatype':'json',
+											 'data': data1,
+											 'success':function(results){
+												 //console.log(results.data1);
+												 //console.log(results.data2);
+												 let output = results.data1; //안에서 새로 for문
+												 let project_num = results.data2[0].register_project.split(",");
+												 //console.log(output);
+												 
+												 let image;
+												 image = output[0].image;
+												 //console.log(image);
+												 
+												 
+												 //프로젝트 마감인지부터 확인해야됨
+												 if (output[0].status == 0){
+													 let tmp = '';
+													 tmp = tmp + "<div class = 'container bg-opacity-10 mb-3 mt-3 shadow' style = 'border-radius:5px; border: 1px solid lightgray;'>"
+													 + "<div class = 'conrainer row' style = 'width: 1370px; height: 612px; border-radius: 20px;'>" 
+													 + "<div class='mt-0 g-0 border border-right-0' style = 'background-color: #F8FAFA; width: 330px; height: 612px;'>" + "<div class='text-left position-relative'>" 
+													 + "<p style = 'height: 32px; float: left; margin: 7px 0px 9px 10px; font-weight: 500px; font-size: 22px; line-height: 32px;'>" + output[0].title + "</p>"
+													 + "<div class = 'container g-0'>"
+													 + "<div style = 'width:328px; height:200px; overflow:hidden; margin:0 auto;'>" + "<img id = 'image_" + (i+1) +"' style = 'width:100%; height:100%; object-fit:cover;' src = '' alt = ''>" + "</div>"
+													 + "</div>"
+													 + "</div>" + "<div class='col-lg-12 col-xl-12 position-relative z-index-1 text-center text-lg-start mb-5 mb-sm-0'> "
+													 + "<p class='lead' style = 'word-break:break-all; margin: 10px 10px 33px 10px;'>"+ output[0].descript_S + "</p>" 
+													 + "<p style = 'word-break:break-all;  margin: 10px;'>" + output[0].descript_L + "</p>"+ "</div>" + "</div>" + "<div class = 'col-lg-8 col-md-12 col-sm-12 col-sm-12 mt-3' style = 'margin-left: 55px;'>" 
+													 + "<div class='col-12'>" + "<div class='fw-bold mb-4' style = 'font-size: 20px;'> 받은 요청 </div>" 
+													 + "</div>" + "<div class='row col-12 mt-2'>" 
+													 //+ '<div class="card card-body bg-transparent pb-0 border mb-4">'
+														<!-- Table START -->
+														+ '<div class="table-responsive border-0 mb-4">'
+															+ '<table class="table table-dark-gray align-middle p-4 mb-0 table-hover">'
+																<!-- Table head -->
+																+ '<thead class = "col-sm-1 mb-4" style = "width: 921px; height: 44px;">'
+																	+ '<tr>'
+													 					+ '<th scope="col" class="col-1 border-0 rounded-start"></th>'
+																		+ '<th scope="col" class="col-1 border-0 text-center" style = "font-size: 18px;">이름</th>'
+																		+ '<th scope="col" class="col-2 border-0 text-center" style = "font-size: 18px;">직책</th>'
+																		+ '<th scope="col" class="col-1 border-0 text-center" style = "font-size: 18px;">나이</th>'
+																		+ '<th scope="col" class="col-1 border-0 text-center" style = "font-size: 18px;">MBTI</th>'
+													 					+ '<th scope="col" class="col-2 border-0 rounded-end"></th>'
+																	+ '</tr>'
+																+ '</thead>'
+
+																<!-- Table body START -->
+																+ '<tbody id="table_' + (i+1) + '">'
+
+																+ '</tbody>'
+																<!-- Table body END -->
+															+ '</table>'
+														+ '</div>'
+														<!-- Table END -->
+													 //+ '</div>'
+													 + "</div>" + "<div>"
+													 + "<button class='btn btn-primary btn-lg m-3' style='float:right; border-radius: 5px; border: 0; width: 115px; height: 45px; font-size: 20px;' id = '" + project_num[i] +"' onclick = \"deadline(\'" + project_num[i] + "\')" +"\" >모집마감</button>"
+
+													 + '<div class="modal" id="myModal_' + project_num[i] + '"tabindex="-1" role="dialog">'
+													 + '<div class="modal-dialog" role="document">'
+													 + '<div class="modal-content">'
+													 + '<div class="modal-header">'
+													 + '<h5 class="modal-title">마감</h5>'
+													 + '</div>'
+													 + '<div class="modal-body">'
+													 + '<p>마감하시겠습니까?</p>'
+													 + '</div>'
+													 + '<div class="modal-footer">'
+													 + '<button type="button" class="btn btn-secondary" id = "modal_close_' + project_num[i] + '">취소</button>'
+													 + '<button type="button" class="btn btn-primary" data-dismiss="modal" id = "dead_' + project_num[i] + '">마감</button>'
+													 + '</div>' + '</div>' + '</div>' + '</div>'
+													 + "</div>" +  "</div>"
+												 	 + "</div>" + "</div>"															
+
+												 	 $('#add').append(tmp);	
+													 $('#image_' + (i+1)).append(image);
+												 	 document.getElementById('image_' + (i+1)).src = image;
+													 
+													 if(output[0].agree_user == null){
+														 let user_array = output[0].nickname_P.split(",");
+														 let agree_user_array = null;
+														 user_append(user_array, (i+1) , project_num[i], output[0], agree_user_array);
+													 }
+													 else{
+														 let user_array = output[0].nickname_P.split(",");
+														 let agree_user_array = output[0].agree_user.split(",");
+														 user_append(user_array, (i+1) , project_num[i], output[0], agree_user_array);
+													 }
+													 
+												 }
+												 else if (output[0].status == 1){
+													 let tmp = '';
+													  tmp = tmp + "<div class = 'container bg-opacity-10 mb-3 mt-3 shadow' style = 'border-radius:5px; border: 1px solid lightgray;'>"
+													 + "<div class = 'conrainer row' style = 'width: 1370px; height: 612px; border-radius: 20px;'>" 
+													 + "<div class='mt-0 g-0 border border-right-0' style = 'background-color: #F8FAFA; width: 330px; height: 612px;'>" + "<div class='text-left position-relative'>" 
+													 + "<p style = 'height: 32px; float: left; margin: 7px 0px 9px 10px; font-weight: 500px; font-size: 22px; line-height: 32px;'>" + output[0].title + "</p>"
+													 + "<div class = 'container g-0'>"
+													 + "<div style = 'width:328px; height:200px; overflow:hidden; margin:0 auto;'>" + "<img id = 'image_" + (i+1) +"' style = 'width:100%; height:100%; object-fit:fill;' src = '' alt = ''>" + "</div>"
+													 + "</div>"
+													 + "</div>" + "<div class='col-lg-12 col-xl-12 position-relative z-index-1 text-center text-lg-start mb-5 mb-sm-0'> "
+													 + "<p class='lead' style = 'word-break:break-all; margin: 10px 10px 33px 10px;'>"+ output[0].descript_S + "</p>" 
+													 + "<p style = 'word-break:break-all;  margin: 10px;'>" + output[0].descript_L + "</p>"+ "</div>" + "</div>" + "<div class = 'col-lg-8 col-md-12 col-sm-12 col-sm-12 mt-3' style = 'margin-left: 55px;'>" 
+													 + "<div class='col-12'>" + "<div class='fw-bold mb-4' style = 'font-size: 20px;'> 받은 요청 </div>" 
+													 + "</div>" + "<div class='row col-12 mt-2'>" 
+													 //+ '<div class="card card-body bg-transparent pb-0 border mb-4">'
+														<!-- Table START -->
+														+ '<div class="table-responsive border-0 mb-4">'
+															+ '<table class="table table-dark-gray align-middle p-4 mb-0 table-hover">'
+																<!-- Table head -->
+																+ '<thead class = "col-sm-1 mb-4" style = "width: 921px; height: 44px;">'
+																	+ '<tr>'
+													 					+ '<th scope="col" class="col-1 border-0 rounded-start"></th>'
+																		+ '<th scope="col" class="col-1 border-0 text-center" style = "font-size: 18px;">이름</th>'
+																		+ '<th scope="col" class="col-2 border-0 text-center" style = "font-size: 18px;">직책</th>'
+																		+ '<th scope="col" class="col-1 border-0 text-center" style = "font-size: 18px;">나이</th>'
+																		+ '<th scope="col" class="col-1 border-0 text-center" style = "font-size: 18px;">MBTI</th>'
+													 					+ '<th scope="col" class="col-2 border-0 rounded-end"></th>'
+																	+ '</tr>'
+																+ '</thead>'
+
+																<!-- Table body START -->
+																+ '<tbody id="table_' + (i+1) + '">'
+
+																+ '</tbody>'
+																<!-- Table body END -->
+															+ '</table>'
+														+ '</div>'
+														<!-- Table END -->
+													 //+ '</div>'
+													 + "</div>" + "<div>"
+													 + "<button class='btn btn-lg m-3' style='float:right; border: 0; color: red; background-color: lightgray;' id = '" + project_num[i] +"' onclick = \"deadline(\'" + project_num[i] + "\')" +"\" >모집완료</button>"
+
+
+													 + '<div class="modal" id="myModal_' + project_num[i] + '"tabindex="-1" role="dialog">'
+													 + '<div class="modal-dialog" role="document">'
+													 + '<div class="modal-content">'
+													 + '<div class="modal-header">'
+													 + '<h5 class="modal-title">마감</h5>'
+													 + '</div>'
+													 + '<div class="modal-body">'
+													 + '<p>마감된 프로젝트입니다.</p>'
+													 + '</div>'
+													 + '<div class="modal-footer">'
+													 + '<button type="button" class="btn btn-secondary" id = "modal_close_' + project_num[i] + '">확인</button>'
+													 + '</div>' + '</div>' + '</div>' + '</div>'
+													 + "</div>" +  "</div>"
+													 + "</div>" + "</div>"															
+
+													 $('#add').append(tmp);
+													 $('#image_' + (i+1)).append(image);
+												 	 document.getElementById('image_' + (i+1)).src = image;
+													 
+													 if(output[0].agree_user == null){
+														 if(output[0].nickname_P == null){
+															 let user_array = null;
+															 let agree_user_array = null;
+															 user_append(user_array, (i+1) , project_num[i], output[0], agree_user_array);
+														 }
+														 else{
+															 let user_array = output[0].nickname_P.split(",");
+															 let agree_user_array = null;
+															 user_append(user_array, (i+1) , project_num[i], output[0], agree_user_array);
+														 }
+														 
+													 }
+													 else{
+														 if(output[0].nickname_P == null){
+															 let user_array = null;
+															 let agree_user_array = output[0].agree_user.split(",");
+															 user_append(user_array, (i+1) , project_num[i], output[0], agree_user_array);
+														 }
+														 else{
+															 let user_array = output[0].nickname_P.split(",");
+															 let agree_user_array = output[0].agree_user.split(",");
+															 user_append(user_array, (i+1) , project_num[i], output[0], agree_user_array);
+														 }
+
+													 }
+												 }
+												 
+												 //$('#photo').append(photo);
+												 //순서가 뒤죽박죽으로 나옴
+												 
+												 
+												 
+											 }
+										  });
+
+										})(i);
+								
+								  } 
+								
+								 }
+								     
+							 });   
+						 } 
+				 
+				 		function user_append(user_array,  pro_num, project_num, output, agree_user_array){ 
+							//console.log(user_array.length);
+							//console.log(agree_user);
+							
+							if(user_array == null){console.log('user array null')}
+							else{
+								for (let i = 0; i < user_array.length; i++) {
+									(function (i) {
+									  let user_data = {
+										  'user_id' : user_array[i]
+										  //'agree_user': agree_user_array
+									  }
+									  console.log(user_array[i],"유저 어레이 값은???")
+									  $.ajax({
+										'url': '/my_project_setting/userList',
+										 'type':'post',
+										  //'async': false,
+										 'datatype':'json',
+										 'data': user_data,
+										 'success':function(results){
+											 let user_data = results.data1; //안에서 새로 for문
+                                             console.log(user_data,"유저데이터 확인중")
+										
+											 
+											
+											 let photo;
+											 if(user_data[0].photo==null){
+												  photo = user_data[0].photo;
+											 }else{
+												 
+											 }
+											
+											 //console.log(photo);
+
+											 let user_pro = '';
+
+											 user_pro = user_pro 
+														+ '<tr id = "t_' + (i+1) + project_num + '" style = "width: 921px; height: 88px;">'
+															+ '<td>'
+																+ '<div class="d-flex align-items-center position-relative"  style = "width: 40px; height: 40px;">'
+																	+ '<div class="avatar avatar-s mb-2 mb-md-0" style = "width: 40px; height: 40px;">'
+																		+ '<img id = "photo_' + (i+1) + project_num + '" style = "width: 40px; height: 40px;" src="" class="rounded-circle" alt="">'
+																	+ '</div>'
+																+ '</div>'
+															+ '</td>'
+															+ '<td class = "col-1">'
+															   + '<div class="mb-0 ms-2">'
+																	+ '<h6 class="mb-0 text-center" style = "font-weight: 900;">' + user_data[0].user_id + '</h6>'
+																+ '</div>'
+															+ '</td>'
+															+ '<td class = "col-2">'
+																+ '<h6 class="table-responsive-title mb-0 text-center">' + user_data[0].position + '</h6>'
+															+ '</td>'
+															+ '<td class = "col-1">'
+																+ '<h6 class="table-responsive-title mb-0 text-center">' + user_data[0].age + '</h6>'
+															+ '</td>'
+															+ '<td class = "col-1">'
+																+ '<h6 class="table-responsive-title mb-0 text-center">' + user_data[0].mbti + '</h6>'
+															+ '</td>'
+
+															+ '<td>'
+																+ "<div class = 'mb-2' style = 'float: right; display:flex; align-items:center;'>"
+																+ "<button style='border:0; border-radius: 5px; margin-right: 10px; background-color: #408558; color: white; width: 83px; height: 43px;' id = 'agree" + (i+1) + project_num +"' onclick = \"agree(" + project_num + "," + (i+1) + "," + "\'" + user_data[0].user_id + "\'" +"," +"\'" + output.agree_user + "\'" + "," +"\'" + output.nickname_P + "\'" + ")" + "\">허락</button>"
+																+ "<button style='border:0; border-radius: 5px; background-color: #9B9EA3; color: white; width: 83px; height: 43px; margin-right: 20px;' id = 'reject" + (i+1)+ project_num +"' onclick = \"reject(" + project_num + "," + (i+1) + "," + "\'" + user_data[0].user_id + "\'" + "," + "\'" + output.nickname_P + "\'" + ")" +"\">거절</button>"
+																+ "<span class='material-symbols-outlined' style = 'display:inline-block;' onclick = 'location.href ='' >chevron_right</span>"
+																 + '<div class="modal" id="usermodal_' + project_num + '"tabindex="-1" role="dialog">'  
+																 + '<div class="modal-dialog" role="document">'
+																 + '<div class="modal-content">'
+																 + '<div class="modal-header">'
+																 + '<h5 class="modal-title">승인</h5>'
+																 + '</div>'
+																 + '<div class="modal-body">'
+																 + '<p>' + user_data[0].user_id + ' 님을 허락하시겠습니까?</p>' //제대로 안나옴
+																 + '</div>'
+																 + '<div class="modal-footer">'
+																 + '<button type="button" class="btn btn-secondary" id = "usermodal_close_' + project_num + '">취소</button>'
+																 + '<button type="button" class="btn btn-primary" data-dismiss="modal" id = "user_agree_' + project_num + '">허락</button>'
+																 + '</div>' + '</div>' + '</div>' + '</div>'
+
+																+ '<div class="modal" id="reject_' + project_num + '"tabindex="-1" role="dialog">'
+																 + '<div class="modal-dialog" role="document">'
+																 + '<div class="modal-content">'
+																 + '<div class="modal-header">'
+																 + '<h5 class="modal-title">거절</h5>'
+																 + '</div>'
+																 + '<div class="modal-body">'
+																 + '<p>' + user_data[0].user_id + ' 님을 거절하시겠습니까?</p>'
+																 + '</div>'
+																 + '<div class="modal-footer">'
+																 + '<button type="button" class="btn btn-secondary" id = "reject_close_' + project_num + '">취소</button>'
+																 + '<button type="button" class="btn btn-primary" data-dismiss="modal" id = "user_reject_' + project_num + '">거절</button>'
+																 + '</div>' + '</div>' + '</div>' + '</div>'
+																+ "</div>" 
+															+ '</td>'
+														+ '</tr>'	
+
+											$('#table_' + pro_num).append(user_pro);
+											$('#photo_' + (i+1) + project_num).append(photo);
+											document.getElementById('photo_' + (i+1) + project_num).src = photo;
+										 }
+									  });
+
+									})(i);
+
+							  }
+							}
+							
+							
+							if(agree_user_array == null){
+								console.log('agree user array null');
+							}
+							else{
+								for (let i = 0; i < agree_user_array.length; i++) {
+									(function (i) {
+									  let user_data = {
+										  'user_id' : agree_user_array[i]
+									  }
+									  $.ajax({
+										'url': '/my_project_setting/userList',
+										 'type':'post',
+										  //'async': false,
+										 'datatype':'json',
+										 'data': user_data,
+										 'success':function(results){
+											 let user_data = results.data1; //안에서 새로 for문
+
+											console.log(output.agree_user);
+											 let photo;
+											 photo = user_data[0].photo;
+											 //console.log(photo);
+
+											 let user_pro = '';
+
+											 user_pro = user_pro 
+														+ '<tr id = "t_' + (i+1) + project_num + '" style = "width: 921px; height: 88px;">'
+															+ '<td>'
+																+ '<div class="d-flex align-items-center position-relative"  style = "width: 40px; height: 40px;">'
+																	+ '<div class="avatar avatar-s mb-2 mb-md-0" style = "width: 40px; height: 40px;">'
+																		+ '<img id = "photo_' + (i+1) + project_num + '" style = "width: 40px; height: 40px;" src="" class="rounded-circle" alt="">'
+																	+ '</div>'
+																+ '</div>'
+															+ '</td>'
+															+ '<td class = "col-1">'
+															   + '<div class="mb-0 ms-2">'
+																	+ '<h6 class="mb-0 text-center" style = "font-weight: 900;">' + user_data[0].user_id + '</h6>'
+																+ '</div>'
+															+ '</td>'
+															+ '<td class = "col-2">'
+																+ '<h6 class="table-responsive-title mb-0 text-center">' + user_data[0].position + '</h6>'
+															+ '</td>'
+															+ '<td class = "col-1">'
+																+ '<h6 class="table-responsive-title mb-0 text-center">' + user_data[0].age + '</h6>'
+															+ '</td>'
+															+ '<td class = "col-1">'
+																+ '<h6 class="table-responsive-title mb-0 text-center">' + user_data[0].mbti + '</h6>'
+															+ '</td>'
+											 				+ '<td class = "col-4">'
+																 + "<a class='material-symbols-outlined' style = 'display:inline-block; float: right; text-decoration-line: none; color: black' href='/main/test/post/"+ user_data[0].user_num +"' >chevron_right</a>"
+															+ '</td>'
+														+ '</tr>'	
+
+											$('#table_' + pro_num).append(user_pro);
+											$('#photo_' + (i+1) + project_num).append(photo);
+											document.getElementById('photo_' + (i+1) + project_num).src = photo;
+										 }
+									  });
+
+									})(i);
+
+							  }
+							}
+	
+
+							 
+						 }
+				 
+						ajax_function()
+						.then(firstAjax)	 
+			 });
+			
+			
+			function deadline(dead_num){
+				$("#myModal_" + dead_num).modal('show');
+				
+				$('#modal_close_' + dead_num).click(function(){
+					$("#myModal_" + dead_num).modal('hide');
+				});
+				
+				// $('#ok_' + dead_num).click(function(){
+				// 	$("#ok_" + dead_num).modal('hide');
+				// });
+				
+				$('#dead_' + dead_num).click(function(){
+					$("#myModal_" + dead_num).modal('hide');
+					let data = {
+						'status':'1',
+						'project_id': dead_num				
+					}
+					$.ajax({
+							'url': '/my_project_setting/updateList',
+							 'type':'post',
+							  //'async': false,
+							 'datatype':'json',
+							 'data': data,
+							 'success':function(){
+								 console.log("success");
+							 }
+						  });
+					window.location.reload()
+					// const target = document.getElementById(dead_num);
+					// target.style.color = "red";
+					// // target.disabled = true;
+					// $('#'+ dead_num).text("모집완료");
+					// //$('#'+ dead_num).remove();
+					// $('#'+ dead_num).prop("disabled") 
+					})	
+			}
+			
+			function agree(pro_num, agree_num, user_id, agree_user, nickname_P){
+				console.log(user_id,"유저아이디 출력해봅시다!!!!!!!!!!!!!!!!!!!!"); //내가 허락 하려는 사람
+				//console.log(output);
+				console.log(agree_num);
+				
+				//$("#usermodal_" + pro_num).modal({backdrop: false});
+				$("#usermodal_" + pro_num).modal('show');
+				
+				$('#usermodal_close_' + pro_num).click(function(){
+					$("#usermodal_" + pro_num).modal('hide');
+				});
+				console.log(agree_user);
+				//console.log(nickname_P);
+				
+				//console.log(nick_P);
+				
+				$('#user_agree_' + pro_num).click(function(){
+					//$('#agree'+ agree_num + pro_num).remove();
+					//$('#reject'+ agree_num + pro_num).remove();
+					//$("#usermodal_" + pro_num).modal('hide');
+					let nick_split = nickname_P.split(',');
+					console.log(nick_split);
+					let nick_P = '';
+					for(let i = 0; i < nick_split.length; i++){
+						console.log('test');
+						if(user_id != nick_split[i]){
+							if(nick_P == ''){
+								nick_P = nick_split[i];
+							}
+							else{
+								nick_P = nick_P + "," + nick_split[i];
+							}
+						}
+						else{
+							console.log('fail');
+						}
+					}
+					
+					if (agree_user == 'null'){
+					let data = {
+						'project_id': pro_num,
+						'user_id' : user_id,
+						'update_nick_P': nick_P
+					}
+					$.ajax({
+					'url': '/my_project_setting/agreeuser',
+					 'type':'post',
+					  //'async': false,
+					 'datatype':'json',
+					 'data': data,
+					 'success':function(){
+					 }
+				  });
+				  window.location.reload()
+				}
+					//agree_user고치는 부분
+				else {
+					console.log('not null');
+					$('#agree'+ agree_num + pro_num).remove();
+					$('#reject'+ agree_num + pro_num).remove();
+					let data = {
+						'project_id': pro_num,
+						'user_id': agree_user + "," + user_id,
+						'update_nick_P': nick_P
+					}
+			
+					$.ajax({
+							'url': '/my_project_setting/agreeuser',
+							 'type':'post',
+							  //'async': false,
+							 'datatype':'json',
+							 'data': data,
+							 'success':function(){
+							 }
+						});
+					window.location.reload()
+					} 
+				})
+				
+				
+			}
+			
+			function reject(pro_num, reject_num, user_id, nickname_P){ //원래 있던 nickname_P를 받아와서 for문으로 삭제 누르면 유저 아이디이면 저장 안하고 아니면 새로운 변수에 저장해서 ajax로 넘기기
+				let nick_P = '';
+				console.log(user_id,"딜리트아이디 출력해봅시다!!!!!!!!!!!!!!!!!!!!");
+				$("#reject_" + pro_num).modal('show');
+				
+				$('#reject_close_' + pro_num).click(function(){
+					$("#reject_" + pro_num).modal('hide');
+				});
+				
+				$('#user_reject_' + pro_num).click(function(){
+					$('#t_'+ reject_num + pro_num).remove();
+					let nick_split = nickname_P.split(',');
+					console.log(user_id);
+
+					for(let i = 0; i < nick_split.length; i++){
+						console.log('test');
+						if(user_id != nick_split[i]){
+							if(nick_P == ''){
+								nick_P = nick_split[i];
+							}
+							else{
+								nick_P = nick_P + "," + nick_split[i];
+							}
+						}
+						else{
+						}
+					}
+					//여기서 nick_p는 agree_user에 있던 값. 거절을 누르면 해당 유저를 지워야함.
+					let data = {
+					'delete_id': user_id,
+					'project_id': pro_num,
+					'nick_P': nick_P
+					}
+					$.ajax({
+							'url': '/my_project_setting/deleteuser',
+							 'type':'post',
+							  //'async': false,
+							 'datatype':'json',
+							 'data': data,
+							 'success':function(results){
+								 if(results.flag==1){
+									 
+									//  $.ajax({
+									// 		'url': '/my_project_setting/rejectuser',
+									// 		 'type':'post',
+									// 		  //'async': false,
+									// 		 'datatype':'json',
+									// 		 'data': data,
+									// 		 'success':function(results){
+									// 			 if(results.flag==1){
+									// 			   console.log("거절 완료");	 
+									// 			 }else{
+									// 			  console.log("거절 실패");	 
+
+									// 			 }
+
+									// 		 }
+									// });
+								   console.log("삭제 완료");	 
+								 }else{
+					              console.log("삭제 실패");	 
+
+								 }
+								 
+							 }
+					});
+					window.location.reload();
+				});
+				
+				
+				console.log(nick_P);
+				
+				
+				
+			}
+			
+		</script>
+	</head>
+	<body>
+		<header class="navbar-light navbar-sticky">
+		<!-- Logo Nav START -->
+			<nav class="navbar navbar-expand-xl">
+				<div class="container">
+					<!-- Logo START -->
+					<a class="navbar-brand" href="main">
+						<img class="light-mode-item navbar-brand-item" src="assets/images/avatar/logo1.jpg" alt="logo">
+						<img class="dark-mode-item navbar-brand-item" src="assets/images/avatar/logo1.jpg" alt="logo">
+					</a>
+					<!-- Logo END -->
+
+					<!-- Responsive navbar toggler -->
+					<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+						data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+						aria-label="Toggle navigation">
+						<span class="navbar-toggler-animation">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</button>
+
+					<!-- Main navbar START -->
+					<div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+						<!-- Nav Main menu START -->
+						<ul class="navbar-nav navbar-nav-scroll mx-auto">
+						</ul>
+						<!-- Nav Main menu END -->
+
+						<!-- Top bar right START -->
+						<div class="ms-xl-auto">
+							<ul class="navbar-nav flex-row align-items-center">
+
+								<!-- Profile dropdown START -->
+								<li class="nav-item ms-2 ms-md-3 dropdown">
+									<!-- Avatar -->
+									<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button"
+										data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown"
+										aria-expanded="false">
+										<img class="avatar-img rounded-circle" src="assets/images/avatar/pooh.jpeg"
+											alt="avatar">
+									</a>
+
+									<!-- Profile dropdown START -->
+									<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
+										aria-labelledby="profileDropdown">
+
+										<!-- Links -->
+
+										<li><a class="dropdown-item" href="my_profile_view"><i
+													class="bi bi-person fa-fw me-2"></i>내 정보 보기</a></li>
+										<li><a class="dropdown-item" href="my_profile_setting"><i
+													class="bi bi-pencil-square fa-fw me-2"></i>내 정보 수정</a></li>
+										<li><a class="dropdown-item" href="my_project_setting"><i
+													class="bi bi-tag fa-fw me-2"></i>등록한 프로젝트 관리</a></li>
+										<li>
+											<hr class="dropdown-divider">
+										</li>
+										<li><a class="dropdown-item bg-danger-soft-hover" href="login"><i
+													class="bi bi-power fa-fw me-2"></i>로그아웃</a></li>
+
+
+
+									</ul>
+									<!-- Profile dropdown END -->
+								</li>
+								<!-- Profile dropdown END -->
+							</ul>
+						</div>
+						<!-- Top bar right END -->
+					</div>
+			</nav>
+		<!-- Logo Nav END -->
+		</header>
+		
+		<div class = "container mt-3">
+			<h4>
+				내가 등록한 프로젝트
+				아아아아
+			</h4>
+			<p id = "num_of_pro">
+		
+			</p>
+		</div>
+		<div id = "add">
+			
+			
+		</div>
+			
+		
+	</body>
+</html>

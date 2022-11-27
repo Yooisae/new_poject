@@ -1,0 +1,77 @@
+
+<html>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</head>
+	<script>
+		//ajax
+		$(document).ready(function(){  //1.페이지가 실행되면
+			
+			 $.ajax({
+							 'url': '/dataLoad/showDataList', //2.ajax를 통해 라우터에 연결
+							 'type':'post',
+							 'datatype':'json',
+							 'success':function(results){
+								//5. backend에서 데이터 받아오기
+								 console.log(results.data);
+								 let output = results.data;
+								 
+								 $('#tableContent').text='';//초기화
+								 
+								 for (let i=0; i<results.data.length;i++){
+									 $('#tableContent').append("<tr>");
+									 // /dataLoad/showDataContent/id  사용자의 id에 해당하는 페이지를 링크할 것. 라우터가 id에 따라 생기고, 그 페이지로 이동하도록 dataload.js랑 관련
+									 $('#tableContent').append("<th scope='row'><a href='/dataLoad/showDataContent/" + output[i].id+ "'>"+output[i].id+"</a></th>"); //id //th는 헤드임. 테이블 헤드.진한부분.
+									 $('#tableContent').append("<td>" + output[i].address + "</td>");  //address
+									 
+									 let major;
+									 if (output[i].major ===1)
+										 major='ICT창업학부';
+									 $('#tableContent').append("<td>" + major + "</td>");  //major
+									 
+									 let interests;
+									 if (output[i].interests===1) interests='Front-End';
+									 else if (output[i].interests===2) interests='Back-End';
+									 else  interests='Both';
+										 
+									 $('#tableContent').append("<td>" + interests + "</td>");  //interests 이 td사이에는 벡엔드에서 받아온 값이 들어갈 것.
+										  
+									 $('#tableContent').append("</tr>");
+									 
+									 
+								   
+								 }
+								 
+								 
+								 
+								//6.데이터를 출력하기
+							 }
+								  
+						 });
+						
+					});
+	</script>
+<body>
+	<table class='table'>
+		<thead>
+			<tr>
+			  <th scope="col">id</th>
+			  <th scope="col">address</th>
+			  <th scope="col">major</th>
+			  <th scope="col">interests</th>
+			</tr>
+  		</thead>
+		<tbody id='tableContent'>
+		
+			
+		</tbody>
+		
+	</table>
+	
+</body>
+	
+	
+</html>
+	

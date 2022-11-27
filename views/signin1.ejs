@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Teampool-Just play and work with Teampool!</title>
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Teampool-Just play and work with Teampool!">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+
+	<!-- Plugins CSS -->
+	<link rel="stylesheet" type="text/css" href="/assets/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/vendor/bootstrap-icons/bootstrap-icons.css">
+
+	<!-- Theme CSS -->
+	<link id="style-switch" rel="stylesheet" type="text/css" href="/assets/css/style.css">
+	  
+	
+	<!-- 데이터받기, 추가 <script src="signin1.js" defer></script> -->
+
+
+
+	
+	
+	
+	<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<script>
+    	$(document).ready(function(){
+    		var getCheck = RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^*()\-_=+\\\|\[\]{};:\'",.<>\/?]).{8,16}$/);
+
+    			console.log('start');
+			
+		
+			
+  				$('#btnJoin').click(function(){
+					
+
+  				 		$('.warning').text('');
+  				 		console.log('Join button clicked');
+					
+					let flag=0;
+					let user_id = $('#exampleInputEmail1').val();
+					console.log(user_id);
+					let data ={'user_id': user_id }
+					
+					$.ajax({
+				 'url': '/login/checkUserID',//2. ajax를 통해 라우터에 연결
+				 'type': 'post',
+				 'data':data,
+				 'datatype': 'json',
+				 'success': function (results) {
+					//5. back-end에서 데이터 받아오기
+					console.log(results.data[0] + "데이타전체?");
+					 
+					 var isEmpty = function(value){
+						if( value == "" || value == null || value == undefined || ( value != null && typeof value == "object" && !Object.keys(value).length ) ){             
+						  return true                 
+						}else{            
+						  return false      
+
+						}
+
+					  };
+					                                                                                                                                            
+					let output;
+					output = results.data[0];
+					 
+					if(isEmpty(output)){
+						console.log('아이디 없음');
+						$('#warning11').text('아이디를 사용해도 좋습니다!');
+					}else{
+						if (user_id == '' || user_id == undefined){	}
+						else{
+							console.log('아이디 있음'); //id 입력도 안햇는데 있다고 나옴
+							$('#warning8').text('아이디가 중복되었습니다!');
+						}
+						 
+					}
+					//6. 데이터를 출력하기
+				
+
+					//아래코드는 뭐지?
+					$('#user_id').text = '';
+					$('#user_pw').text = '';
+
+
+					//$('#user_id').append(user_id);
+					//$('#user_pw').append(user_pw);
+					 
+					
+					 
+					 
+					 
+					console.log('로그인 버튼 클릭');
+					let inputEmail = $('#exampleInputEmail1').val();
+					let inputPassword = $('#inputPassword5').val();
+
+					console.log(inputEmail);
+					console.log(inputPassword);
+					
+					 
+					 
+					 
+				
+   				
+					let  pw1 = $('#inputPassword5').val();
+					
+					if ($('#inputPassword5').val().length>7){
+						
+						// pw1 = $('#inputPassword5').val();
+						console.log('8자리이상임!!!!!!!!!!!'+pw1);	
+					}
+					
+					else{
+						$('#warning9').text('8자리 이상으로 입력하세요!');
+					    flag =1;
+					}
+   				 
+   			
+
+   				 let pw2 = $('#inputPassword6').val();
+   				 console.log(pw2);
+
+   			
+				 //let interests = $('#inputRadio').val();
+   				 let interests = $('input[name="interestsRadio"]:checked').val();
+					 console.log( interests);  
+				//	interests=("1")
+   				// console.log("인터" + interests);  
+
+   				// let major =  $('#inputMajor').val();
+   				// console.log('major:' + major);
+					
+		
+
+   				 if (user_id){
+   				 	console.log('studentID okay');
+   				 }
+					else{ 
+   				 	console.log('no studentID');
+   				 	$('#warning1').text('ID를 입력하지 않았습니다!');
+					 flag =1;
+   				 }
+
+   				 if (pw1 === pw2){
+   				 	console.log('password okay');
+   				 }
+					else{ 
+					console.log('password unmatched');
+						$('#warning2').text('패스워드가 다릅니다.확인해주세요!');
+					    flag =1;
+					}
+
+					if(pw1&&pw2){
+
+					}else{
+					console.log('password중 하나가 없어요');
+					$('#warning2').text('패스워드 중 하나가 없어요');
+						 flag =1;
+					}
+					
+					
+					if (interests){
+					console.log('약관 선택됐어요');
+
+					}else{
+					console.log('약관 선택 안 됐어요');
+					$('#warning3').text('약관에 동의해주세요!');
+						 flag =1; 
+					}
+					
+				
+					
+				
+					let data = {'user_id':user_id,
+								    'pw':pw1,
+									//'major':major,
+									'interests':interests
+								
+							   }
+					
+					
+					//추가2
+					//location.href ="my_profile_view.js?" +studentID;
+					
+					sessionStorage.setItem("studentID", user_id);
+					sessionStorage.setItem("pw1", pw1);
+					sessionStorage.setItem("interests", interests);
+					
+					 console.log('이것은 플래그!!!!!!!!!'+flag);
+					
+					if (flag==0){
+							location.href="signin2";
+							}
+					
+					 }
+			});
+					
+					//error가 없으면...
+					/*--
+   					if (flag == 0){
+						 $.ajax({
+							 'url': '/signin1/interfaceUpdate',
+							 'type':'post',
+							 'datatype':'json',
+							 'data': data,
+							 'success':function(results){
+								 console.log(results.message);
+								 
+								  console.log(results.flag);
+								 if (results.flag==1){
+									 $('#results').text('성공적으로 저장되었습니다.');
+								 }else{
+									 $('#results').text('실패했습니다.');
+								 }
+							 }
+								  	
+						 });
+						
+					
+						
+				 	}
+					--*/
+  		});
+			
+			
+	
+});
+		
+		
+		
+		$(document).ready(function(){
+			$('#btnJoin2').click(function(){
+				$('.warning').text('');
+				let user_id = $('#exampleInputEmail1').val();
+				console.log(user_id);
+				let data={
+					'user_id': user_id
+				}
+				$.ajax({
+				 'url': '/login/showDataList',//2. ajax를 통해 라우터에 연결
+				 'type': 'post',
+			     'data': data,
+				 'datatype': 'json',
+				 'success': function (results) {
+					//5. back-end에서 데이터 받아오기
+					console.log(results.data[0] + "데이타전체?");
+					//6. 데이터를 출력하기
+					  var isEmpty = function(value){
+						if( value == "" || value == null || value == undefined || ( value != null && typeof value == "object" && !Object.keys(value).length ) ){             
+						  return true                 
+						}else{            
+						  return false      
+
+						}
+
+					  };
+					 
+					let output;
+					output = results.data[0];
+					 
+					if(isEmpty(output)){
+						console.log('아이디 없음');
+						$('#warning11').text('아이디를 사용해도 좋습니다!');
+					}else{
+						console.log('아이디 있음');
+						$('#warning8').text('아이디가 중복되었습니다!');
+						
+
+					}
+					
+
+				
+
+
+					//아래코드는 뭐지?
+					$('#user_id').text = '';
+					$('#user_pw').text = '';
+
+
+					
+					 
+				 }
+				});
+				
+				
+				});
+			});
+				
+			
+    </script>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</head>
+
+<body>
+	
+	<!-- 추가, 데이터 보내기 <a href="my_profile_view.ejs"/> </a> -->
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	<section class="p-0 d-flex align-items-center position-relative overflow-hidden">
+	
+		<div class="container-fluid">
+			<div class="row">
+				<!-- left -->
+				
+					
+				<!-- Right -->
+				<div class="col-12 col-lg-6 m-auto">
+					<div class="row my-5">
+						<div class="col-sm-10 col-xl-8 m-auto">
+							<!-- Title -->
+							<img src="/assets/images/element/03.svg" class="h-40px mb-2" alt="">
+							<h2>회원가입</h2>
+							<p class="lead mb-4">만나서 반가워요! 계정을 만들어보세요!</p>
+						
+							<!-- Form START -->
+							<form>
+								<!-- Email -->
+								<div class="mb-4">
+									
+									<label for="exampleInputEmail1" class="form-label">아이디</label>
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="bi bi-envelope-fill"></i></span>
+										<input type="email" class="form-control border-0 bg-light rounded-end ps-1" placeholder="아이디" id="exampleInputEmail1">
+									<!-- 로그인 중복버튼 -->
+										<div class="align-items-center mt-0">
+									<div class="d-grid">
+												<!-- Button 생-->
+										<button class="btn btn-primary mb-0" type="button" id="btnJoin2"> 중복확인</button>
+										
+									</div>
+								
+											
+											
+								</div>
+										
+								</div>
+									<div id="warning1" class="warning text-danger"></div>
+									<div id="warning88" class="warning text-danger"></div>
+									<div id="warning8" class="warning text-danger"></div>
+									<div id="warning11" class="warning text-success"></div>
+									
+									
+						</div>
+								<!-- Password -->
+								<div class="mb-4">
+									
+									<label for="inputPassword5" class="form-label">패스워드 </label>
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+										<input type="password" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword5">
+										
+									</div>
+									<div id="passwordHelpBlock" class="form-text">
+										패스워드는 최소 8자리 이상이어야 합니다.
+										<div id="warning9" class="warning text-danger"></div>
+									</div>
+									
+								</div>
+								<!-- Confirm Password -->
+								<div class="mb-4">
+									<label for="inputPassword6" class="form-label">비밀번호 확인</label>
+									<div class="input-group input-group-lg">
+										<span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+										<input type="password" class="form-control border-0 bg-light rounded-end ps-1" placeholder="*********" id="inputPassword6">
+									</div>
+									<div id="warning2" class="warning text-danger"></div>
+								</div>
+								
+						<!--
+								<div class="mb-4">
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input" id="checkbox-1">
+										<label class="form-check-label" for="checkbox-1">가입하면 <a href="#"> 서비스 약관</a>에 동의하게 됩니다</label>
+						!-->
+								
+								
+										  	<div class="form-check mb-3">
+	  		<input type="radio" class="form-check-input" name=interestsRadio warning1>
+	  		<label class="form-check-label" for="radio1"  >
+	    		가입하면 <a href="#"> 서비스 약관</a>에 동의하게 됩니다
+	  		</label>
+								</div>
+												
+												<div id="warning3" class="warning text-danger"></div>
+																				<!--	</div> -->
+										
+
+							
+								<!-- Button -->
+								<div class="align-items-center mt-0">
+									<div class="d-grid">
+												<!-- Button 생-->
+										<button class="btn btn-primary mb-0" type="button" id="btnJoin" href = "signin2.ejs"> 다음</button>
+									</div>
+									<div id="results"> </div>
+								</div>
+							</form>
+							<!-- Form END -->
+
+							<!-- Social buttons -->
+							<!-- <div class="row">
+								<!-- Divider with text
+								<div class="position-relative my-4">
+									<hr>
+									<p class="small position-absolute top-50 start-50 translate-middle bg-body px-5">혹은</p>
+								</div>
+								<!-- Social btn
+								<div class="col-xxl-12 d-grid">
+									<a href="#" class="btn bg-google mb-2 mb-xxl-0"><i class="fab fa-fw fa-google text-white me-2"></i>구글로 회원가입하기 </a>
+								</div>
+								
+							</div> -->
+
+							<!-- Sign up link -->
+							<div class="mt-4 text-center">
+								<span>이미 계정이 있으신가요?<a href="login"> 여기서 로그인하기</a></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<!-- Bootstrap JS -->
+<script src="/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Template Functions -->
+<script src="/assets/js/functions.js"></script>
+
+</body>
+</html>

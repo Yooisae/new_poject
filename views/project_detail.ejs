@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+   <title>Teampool-Just play and work with Teampool!</title>
+
+   <!-- Meta Tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <meta name="author" content="Webestica.com">
+   <meta name="description" content="Teampool-Just play and work with Teampool!">
+
+   <!-- Favicon -->
+   <link rel="shortcut icon" href="assets/images/avatar/teamPool.png">
+
+   <!-- Google Font -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+
+   <!-- Plugins CSS -->
+   <link rel="stylesheet" type="text/css" href="/assets/vendor/font-awesome/css/all.min.css">
+   <link rel="stylesheet" type="text/css" href="/assets/vendor/bootstrap-icons/bootstrap-icons.css">
+   <link rel="stylesheet" type="text/css" href="/assets/vendor/tiny-slider/tiny-slider.css">
+   <link rel="stylesheet" type="text/css" href="/assets/vendor/glightbox/css/glightbox.css">
+   <link rel="stylesheet" type="text/css" href="/assets/vendor/choices/css/choices.min.css">
+
+   <!-- Theme CSS -->
+   <link id="style-switch" rel="stylesheet" type="text/css" href="/assets/css/style.css">
+   <base href = "/">
+
+</head>
+    <style>
+      .material-symbols-outlined {
+           font-variation-settings:
+           'FILL' 0,
+           'wght' 200,
+           'GRAD' -25,
+           'opsz' 40
+         }
+		{
+			font-size:20px
+		}
+    </style>
+   <script>
+      $(document).ready(function(){ //1. 페이지가 실행되면
+		  		
+                  let id;
+                  let flag = 0;
+                   let num;
+                   let user_array = [];
+		  $('#logout').click(function () {
+            
+            
+            localStorage.removeItem("user_name");
+            clear()
+
+         })
+		  
+		  let user_id = localStorage.getItem("user_name");
+		  if (user_id==null){
+            document.getElementById("head").style.display = 'none';
+            document.getElementById("no_login_head").style.display = 'block';
+            
+         }else{
+            document.getElementById("head").style.display = 'block';
+            document.getElementById("no_login_head").style.display = 'none';
+         }
+		  
+             let user_data={
+                'user_id':user_id
+             }
+             
+             $.ajax({
+            'url': '/main/userphoto',//2. ajax를 통해 라우터에 연결
+            'type':'post',
+            'datatype':'json',
+            'data': user_data,
+            'success':function(results){
+               //5. back-end에서 데이터 받아오기
+               console.log(results.data);
+               //6. 데이터를 출력하기
+                        let output;
+                         output = results.data;
+                         console.log(output);
+   
+                         
+                        let photo;
+                           if(output[0].user_image){
+                           photo = output[0].user_image;
+                           $('#photo').append(photo);
+                           document.getElementById('photo').src=photo;
+                           
+                           console.log(photo);
+                           console.log('사진받아옴')
+                        }else{
+                           photo = "/images/default-profile.jpg";
+							console.log("사진 못받아옴");
+                           $('#photo').append(photo);
+                           document.getElementById('photo').src=photo;
+                           
+                        }
+            }
+            });
+		  //새로 추가하는부분............11월 22일
+		  let present_project= <%= data[0].project_id%>;
+		   let pre_data ={
+			   'project_id':present_project,
+			   'user_id':user_id
+		   }
+		  $.ajax({
+            'url': '/main/checkApply',//2. ajax를 통해 라우터에 연결
+            'type':'post',
+            'datatype':'json',
+            'data': pre_data,
+            'success':function(results){
+               //5. back-end에서 데이터 받아오기
+               console.log(results.data[0].flag,"결과가 무엇이오오오오오");
+				if(results.data[0].flag==0){
+				  
+					 
+				 }else{
+					 $('#btnSubmit').text("신청완료")
+					 $('#btnSubmit').attr("disabled",true)
+				 }
+            }
+            });
+		  
+		  $.ajax({
+            'url': '/main/checkLike',//2. ajax를 통해 라우터에 연결
+            'type':'post',
+            'datatype':'json',
+            'data': pre_data,
+            'success':function(results){
+               //5. back-end에서 데이터 받아오기
+				
+               //console.log(results.data[0].TEST.includes(String(present_project)),"결과가 무엇이오오오오오");
+				if(results.data[0].TEST.includes(String(present_project))==true){
+				     $('#btnSave').text("관심등록완료")
+					 $('#btnSave').attr("disabled",true)
+					 
+				 }else{
+					
+				 }
+            }
+            });
+            /////////////////////////
+		  
+                   //resolve에 넣으면 성공했다는 것.
+                   function ajax_function(){   
+                      return new Promise(function(resolve, reject){
+                         let project_id= <%= data[0].project_id%>; //퍼센트 표시 넣어야함
+						 
+                          let project_data={'project_id':project_id}
+                         if (flag == 0){
+                            $.ajax({
+                               'url': '/main/showProjectList',
+                               'type':'post',
+                               'datatype':'json',
+                               //'async': false,
+                               'data': project_data,
+                               //'setTimeout': 30000,
+                               'success':function(results){
+                                  console.log(results.data[0]);
+                                  let output;
+                                   output = results.data[0];                     
+                                   resolve(output);
+                                    }
+                                  }) 
+                               }
+                            });
+                        }
+                   function firstAjax(output){    
+                      return new Promise(function(resolve, reject){
+                         console.log('첫번째 실행');
+                         //console.log(num);
+                         let project_id;
+                           project_id = output.project_id;
+
+                           let title;
+                           title = output.title;
+						                           
+                           let category; 
+                              if (output.category===1) category='디자인';
+                             else if (output.category===2) category='프로그래밍';
+                             else if (output.category===3) category='경영/경제';
+                             else  category ='영상';
+                                 
+                         let descript_L;
+                         descript_L = output.descript_L;
+
+                         let descript_S;
+                         descript_S = output.descript_S;
+                                  
+                         let phone_num;
+                         phone_num = output.phone_num;
+
+                         let team_max_num;
+                         team_max_num = output.team_max_num;
+
+                         let tag;
+                         tag = output.tags;
+						  
+						 let open_chat;
+						 open_chat = output.open_chat;
+						  
+						  console.log(open_chat);
+						  
+						 let contest_link;
+						 contest_link = output.contest_link;
+						  
+                         let image;
+                         image = output.test_image;
+						
+						
+						  if(output.status==undefined||output.status==0){
+						
+							  	 $('#shut-down').append('<h4><span class="badge bg-success">'+'모집중'+'</span></h4>');
+						  }else{
+							    $('#shut-down').append('<h4><span class="badge bg-danger">'+'모집마감'+'</span></h4>');
+						  }
+						  
+                  
+                         $('#title').text='';                      
+                         $('#category').text='';
+                         $('#descript_S').text='';
+                         $('#descript_L').text='';
+                         $('#phone_num').text='';
+                         $('#team_max_num').text='';
+                         $('#tags').text='';
+						 $('#open_chat').text='';
+						 $('#contest_link').text='';
+
+                         $('#title').append(title);
+                         $('#category').append(category);
+                         $('#descript_L').append(descript_L);
+                         $('#descript_S').append(descript_S);
+                         $('#phone_num').append(phone_num);
+                         $('#team_max_num').append(team_max_num + "명");
+                         $('#tags').append(tag);
+						 $('#open_chat').append(open_chat);
+						 $('#contest_link').append(contest_link);
+						 // $('#project_img').append(image);
+						  
+						  console.log(open_chat);
+						  console.log(title);
+					
+                         document.getElementById('project_img').src= image;
+
+                         let team_present_num;                        
+                         let user_array;
+                        
+                         
+                         if (output.agree_user==null){
+                         console.log('현재 참여인원 한명');
+                            let host_id= output.nickname_H;
+                            console.log(host_id,"호스트아이디누구인가요..");
+                            let data = {
+                                     'host_id' : host_id
+                                }
+                                                        
+                           $.ajax({
+                                 'url': '/main/addHost',
+                                  'type':'post',
+                                   //'async': false,
+                                  'datatype':'json',
+                                  'data': data,
+                                  'success':function(results){
+                                     //console.log(results.data1);
+                                     //console.log(results.data2);
+                                     let USER = results.user_Data; //안에서 새로 for문
+                                     console.log(USER);
+                                     let photo;
+                                     if (USER[0].user_image){
+                                        photo = USER[0].user_image;
+                                     }else{
+                                         photo = "/images/default-profile.jpg";
+                                     }
+                                     
+                                     console.log(USER);
+                                     let tmp = '';
+                                     tmp = tmp 
+                                          + '<div class="col">'
+                                          + '<div class="card shadow h-100" style="width: 18rem;">'
+                                          + '<img id="user_photo"  style = "height: 250px; width: 18rem;" src="..." class="card-img-top" alt="...">'
+                                          + '<div class="card-body">'
+									      +  '<h5> <span class="badge bg-primary bg-opacity-20 text-white">' +'팀장'+'</span></h5>'  
+                                          + '<h5 class="card-title">' + USER[0].nickname + '</h5>'
+                                          + '<h7 class="card-text">' + USER[0].mbti + '</h7>'
+      
+                                           + '<a class="stretched-link" href="/main/test/post/'+ USER[0].user_num +'">'+'</a>'  //사용자마다 다른 프로필 주소가져야함, 여기에 user_num주고 my_profile_view js파일에 id추가.
+                                          + '</div>'
+                                           + '</div>'
+                                                        
+                                    $('#team').append(tmp);
+                                     
+                                       $('#user_photo').append(photo);
+                                        document.getElementById('user_photo').src= photo;   
+                                    
+                                     
+                                     
+
+                                  }
+                                }) 
+
+                         }else{
+                            
+                            let host_id=output.nickname_H;
+                            let data = {
+                                     'host_id' : host_id
+                                }
+                               console.log(host_id,"호스트아이디누구인가요..");                         
+                           $.ajax({
+                                 'url': '/main/addHost',
+                                  'type':'post',
+                                   //'async': false,
+                                  'datatype':'json',
+                                  'data': data,
+                                  'success':function(results){
+                                     //console.log(results.data1);
+                                     //console.log(results.data2);
+                                     let USER = results.user_Data; //안에서 새로 for문
+                                     let photo;
+									console.log(USER,"유저데이터 출력")
+                                     if (USER[0].user_image){
+                                        photo = USER[0].user_image;
+                                     }else{
+                                         photo = "/images/default-profile.jpg";
+                                     }
+                                     
+                                     console.log(USER);
+                                     let tmp = '';
+                                     tmp = tmp 
+                                          + '<div class="col">'
+                                          + '<div class="card shadow h-100" style="width: 18rem;">'
+                                          + '<img id="user_photo"  style = "height: 250px; width: 18rem;" src="..." class="card-img-top" alt="...">'
+                                          + '<div class="card-body">'
+									      +  '<h5> <span class="badge bg-primary bg-opacity-20 text-white">' +'팀장'+'</span></h5>' 
+                                          + '<h5 class="card-title">'+ USER[0].nickname + '</h5>'
+                                          + '<h7 class="card-text">' + USER[0].mbti + '</h7>'
+      
+                                           + '<a class="stretched-link" href="/main/test/post/'+ USER[0].user_num +'">'+'</a>'  //사용자마다 다른 프로필 주소가져야함, 여기에 user_num주고 my_profile_view js파일에 id추가.
+                                          + '</div>'
+                                           + '</div>'
+                                                        
+                                    $('#team').append(tmp);
+                                     
+                                       $('#user_photo').append(photo);
+                                        document.getElementById('user_photo').src= photo;   
+                                    
+                                     
+                                     
+
+                                  }
+                                }) 
+                            //호스트 외의 사람들 추가하기
+                         user_array = output.agree_user.split(",");
+            
+                         let num = user_array.length;
+                         $('#present_team').append(num+1+"명");
+							 
+                        for (let i = 0; i < num; i++) {
+                              (function (i) {
+                                let data1 = {
+                                     'user_id' : user_array[i]
+                                }
+                                $.ajax({
+                                 'url': '/main/userList',
+                                  'type':'post',
+                                   //'async': false,
+                                  'datatype':'json',
+                                  'data': data1,
+                                  'success':function(results){
+                                     //console.log(results.data1);
+                                     //console.log(results.data2);
+                                     let USER = results.user_Data; //안에서 새로 for문
+                                     let photo;
+                                     if (USER[0].user_image){
+                                        photo = USER[0].user_image;
+                                     }else{
+                                         photo = "/images/default-profile.jpg";
+                                     }
+                                     
+                                     console.log(USER);
+                                     let tmp = '';
+                                     tmp = tmp 
+                                          + '<div class="col">'
+                                          + '<div class="card shadow h-100" style="width: 18rem;">'
+                                          + '<img id="user_photo'+(i+1)+'"  style = "height: 250px; width: 18rem;" src="..." class="card-img-top" alt="...">'
+                                          + '<div class="card-body">'
+									      +  '<h5> <span class="badge bg-secondary bg-opacity-20 text-white">' +'팀원'+'</span></h5>'     
+                                          + '<h5 class="card-title">'+ USER[0].nickname + '</h5>'
+                                          + '<h7 class="card-text">' + USER[0].mbti + '</h7>'
+      
+                                           + '<a class="stretched-link" href="/main/test/post/'+ USER[0].user_num +'">'+'</a>'  //사용자마다 다른 프로필 주소가져야함, 여기에 user_num주고 my_profile_view js파일에 id추가.
+                                          + '</div>'
+                                           + '</div>'
+                                                        
+                                    $('#team').append(tmp);
+                                       $('#user_photo'+(i+1)).append(photo);
+                                        document.getElementById('user_photo'+(i+1)).src= photo;   
+                                  }
+                                });
+                              })(i);
+                          }
+                         }
+                      });   
+                   } 
+                  ajax_function()
+                  .then(firstAjax)    
+          });
+         
+      
+      
+   $(document).ready(function () {
+      
+       
+      let nick_P= '<%= data[0].nickname_P%>' ;
+      
+      console.log(nick_P+'테스트로 써보는중입니다아아아아아아아아아ㅏㅇ');
+         let present_pro_id;
+           present_pro_id = '<%= data[0].project_id%>';
+          let team_present_num;
+           team_present_num = '<%= data[0].team_present_num%>';
+          console.log(present_pro_id);
+	   
+          function failModal(){
+               window.confirm('마감된 프로젝트 입니다!');
+                           }
+            function successModal(){
+               window.confirm('프로젝트 신청이 완료되었습니다!');
+            }
+      
+      
+          $('#btnSubmit').click(function () {
+            
+           
+               
+            let project_id= '<%= data[0].project_id%>';
+            let nickname_part= localStorage.getItem("user_name");
+            let status='<%= data[0].status%>';
+			  
+			if(nickname_part==null){
+				 window.confirm('로그인이 필요합니다!');
+			}else{
+				if (status==1){
+               console.log('마감입니다');
+               failModal();
+
+            }else{
+               console.log('마감아님');
+               let project_data={'project_id':project_id}
+               $.ajax({
+                   'url': '/main/showProjectList',
+                   'type':'post',
+                   'datatype':'json',
+                   //'async': false,
+                   'data': project_data,
+                   //'setTimeout': 30000,
+                   'success':function(results){
+                      //console.log(results.data);
+                      let output;
+                      output = results.data[0];                     
+                      console.log(output);
+                     let nickname_part= localStorage.getItem("user_name");
+                      if (output.nickname_P == null || output.nickname_P == ''){
+                         let present_data = {
+                            'nickname_P': nickname_part,
+                            'project_id':present_pro_id,
+                            'nick_P': nick_P,
+                            'team_present_num':team_present_num,
+                         }      
+                         $.ajax({
+                            'url': '/main/participantUpdate',
+                            'type': 'post',
+                            'datatype': 'json',
+                            'data':  present_data,
+                            'success': function (results) {
+                                  console.log("이거 실행됨");
+                                  if (results.flag == 1) {
+                                  $('#results').text('성공적으로 저장되었습니다.');
+                                  } else {
+                                  $('#results').text('실패했습니다.');
+                                  }
+                           }
+
+                         });
+                         successModal();
+						  window.location.reload();
+						  
+                      }
+                      else{
+                         console.log("실행");
+                         let nick_split = output.nickname_P.split(",");
+                         console.log(nick_split);
+                     
+                        if(nick_split.includes(nickname_part)){
+                           console.log('db에 있음');
+                           failModal();
+                        }
+                        else{
+                           console.log('db에 없음');
+                            let present_data = {
+                               'nickname_P': nickname_part,
+                               'project_id':present_pro_id,
+                               'nick_P': nick_P,
+                               'team_present_num':team_present_num,
+                            }   
+                           $.ajax({
+                               'url': '/main/participantUpdate',
+                               'type': 'post',
+                               'datatype': 'json',
+                               'data':  present_data,
+                               'success': function (results) {
+                                    console.log("db에 데이터는 있지만 이사람은 없음");
+                                     if (results.flag == 1) {
+                                     $('#results').text('성공적으로 저장되었습니다.');
+                                     } else {
+                                     $('#results').text('실패했습니다.');
+                                     }
+                              }
+
+                            });
+                           successModal();
+							window.location.reload();
+                        }
+                        
+                      }
+                     
+
+                        }
+                      }) 
+               
+               //successModal();
+            }
+			}
+            
+            
+             let test_flag=0;
+             
+            
+            console.log(nickname_part+"지금 유저는?????"); //null이라고 뜸.
+
+             
+
+       
+       });
+
+	   // function successModal_interest(){
+	   // if(window.confirm("관심프로젝트로 등록하시겠습니까?")){
+	   // successModal_interest();
+	   // } else {
+	   // console.log("cancel");
+	   // }
+	   // }
+	 function successModal_interest(){
+         alert('관심프로젝트로 등록되었습니다!');
+    	}
+    function failModal_interest(){
+         alert('이미 등록된 관심프로젝트입니다!');
+        }
+      $('#btnSave').click(function(){
+		  if(window.confirm("관심 프로젝트로 등록하시겠습니까?")){
+			  successModal_interest();
+		  } else {
+			  console.log("관심등록 취소")
+		  }
+               let user = window.localStorage.getItem("user_name");
+		  	   if(user==null){
+				    window.confirm('로그인이 필요합니다!');
+			   }else{
+				   let like_project_id= '<%= data[0].project_id%>';
+               
+               let data = {
+                  'user':user,
+                  'like_project_id': like_project_id            
+               }
+                $.ajax({
+                  
+                     'url': '/main/likeProjectUpdate',
+                      'type':'post',
+                       //'async': false,
+                      'datatype':'json',
+                      'data': data,
+                      'success':function(results){
+                         if (results.flag == 0) {
+                           console.log(results.flag,'성공적으로 관심 등록됨')
+                           //successModal_interest();
+                           window.location.reload()
+							document.getElementById("btnSave").style.backgroundColor="gray";
+                            } else {
+                           console.log(results.flag,'관심등록 실패')
+                           //failModal_interest();
+                           //window.location.reload()
+                            }
+                      }
+                    });
+              let data2 = {
+                  'user':user,
+                  'like_project_id': like_project_id            
+               }
+                $.ajax({
+                     'url': '/main/interestUserUpdate',
+                      'type':'post',
+                       //'async': false,
+                      'datatype':'json',
+                      'data': data2,
+                      'success':function(results){
+                         if (results.flag == 1) {
+                           console.log('성공적으로 관심 등록됨')
+                            } else {
+                           console.log('관심등록 실패')
+                            }
+                      }
+                    }); 
+			   }
+      })
+   });
+      
+      
+         
+      
+      
+      
+   </script>
+
+<body>
+
+   <!-- Header START -->
+   <header id ="head" class="navbar-light navbar-sticky" style="display:none;">
+      <!-- Logo Nav START -->
+      <nav class="navbar navbar-expand-xl">
+         <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="main">
+               <img class="light-mode-item navbar-brand-item" style="width:80px;height:60px" src="assets/images/avatar/teamPool.png" alt="logo">
+               <img class="dark-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+               data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+               aria-label="Toggle navigation">
+               <span class="navbar-toggler-animation">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+               </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+               <!-- Nav Main menu START -->
+               <ul class="navbar-nav navbar-nav-scroll mx-auto">
+               </ul>
+               <!-- Nav Main menu END -->
+
+               <!-- Top bar right START -->
+               <div class="ms-xl-auto">
+                  <ul class="navbar-nav flex-row align-items-center">
+					  	<a class="avatar avatar-sm p-0">
+                           <img id="notification" class="avatar-img rounded-circle" src="assets/images/alarm/notification.png"
+                              alt="avatar">
+                        </a> 
+
+                     <!-- Profile dropdown START -->
+                     <li class="nav-item ms-2 ms-md-3 dropdown">
+                        <!-- Avatar -->
+                        <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button"
+                           data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                           <img id="photo" class="avatar-img rounded-circle" src="assets/images/avatar/pooh.jpeg"
+                              alt="avatar">
+                        </a>
+
+                        <!-- Profile dropdown START -->
+                        <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
+                           aria-labelledby="profileDropdown">
+
+                           <!-- Links -->
+                           
+                           <li><a class="dropdown-item" href="my_profile_view"><span
+                                     class="material-symbols-outlined">person_filled</span> 내 정보 보기</a></li>
+                           <li><a class="dropdown-item" href="my_profile_setting"><span
+                                     class="material-symbols-outlined">edit_square</span> 내 정보 수정</a></li>
+                           <li><a class="dropdown-item" href="my_project_setting"><span
+                                     class="material-symbols-outlined">web</span> 내가 개설한 프로젝트</a></li>
+                           <li><a class="dropdown-item" href="my_participating_project"><span
+                                     class="material-symbols-outlined">front_hand</span> 나의 참여 프로젝트</a></li>
+                           <li><a class="dropdown-item" href="interest"><span
+                                     class="material-symbols-outlined">bookmarks</span> 나의 관심 프로젝트</a></li>
+                              
+                           <li>
+                              <hr class="dropdown-divider">
+                           </li>
+                           <li><a id="logout" class="dropdown-item bg-danger-soft-hover" href="login"><i
+                                    class="bi bi-power fa-fw me-2"></i>로그아웃</a></li>
+
+
+
+                        </ul>
+                        <!-- Profile dropdown END -->
+                     </li>
+                     <!-- Profile dropdown END -->
+                  </ul>
+               </div>
+               <!-- Top bar right END -->
+            </div>
+         </div>
+      </nav>
+   
+      <!-- Logo Nav END -->
+   </header>
+   <!-- Header END -->
+      
+   <header id ="no_login_head" class="navbar-light navbar-sticky" style="display:none;">
+      <!-- Logo Nav START -->
+      <nav class="navbar navbar-expand-xl">
+         <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="main">
+               <img class="light-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+               <img class="dark-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+               data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+               aria-label="Toggle navigation">
+               <span class="navbar-toggler-animation">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+               </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+               <!-- Nav Main menu START -->
+               <ul class="navbar-nav navbar-nav-scroll mx-auto">
+               </ul>
+               <!-- Nav Main menu END -->
+
+               <!-- Top bar right START -->
+               <div class="ms-xl-auto">
+                  <ul class="navbar-nav flex-row align-items-center">
+
+                     
+                        <!-- Avatar -->
+                        <a  href="login" id="profileDropdown" role="button"
+                           data-bs-auto-close="outside" data-bs-display="static"
+                           aria-expanded="false">
+                           로그인/회원가입
+                        </a>
+
+                        
+                  
+                  </ul>
+               </div>
+               <!-- Top bar right END -->
+            </div>
+         </div>
+      </nav>
+      <!-- Logo Nav END -->
+   </header>
+   <!-- Header END -->
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+
+<!-- =======================
+Page intro START -->
+<section class="bg-light py-0 py-sm-5">
+   <div class="container">
+      <div class="row py-5">
+         <div class="col-lg-8">
+            <!-- Badge -->
+            <h6 id='category' class="mb-3 font-base bg-primary text-white py-2 px-4 rounded-2 d-inline-block">
+                     
+
+            </h6>
+            <!-- Title -->
+            <h1 id='title'>
+                 
+            </h1>
+            <p id='descript_S'>
+                  
+            </p>
+            <!-- Content -->
+         
+         </div>
+      </div>
+   </div>
+</section>
+<!-- =======================
+Page intro END -->
+
+<!-- =======================
+Page content START -->
+<section class="pb-0 py-lg-5">
+   <div class="container">
+      <div class="row">
+         <!-- Main content START -->
+         <div class="col-lg-12">
+            <div class="card shadow rounded-2 p-0">
+               <!-- Tabs START -->
+               <div class="card-header border-bottom px-4 py-3">
+                  <ul class="nav nav-pills nav-tabs-line py-0" id="course-pills-tab" role="tablist">
+                     <!-- Tab item -->
+                     <li id="shut-down"class="nav-item me-2 me-sm-4" role="presentation">
+                       
+                     </li>
+                     
+                  </ul>
+               </div>
+               <!-- Tabs END -->
+
+               <!-- Tab contents START -->
+               <div class="card-body p-4">
+                  <div class="tab-content pt-2" id="course-pills-tabContent">
+                     <!-- Content START -->
+                     <div class="tab-pane fade show active" id="course-pills-1" role="tabpanel" aria-labelledby="course-pills-tab-1">
+                        <!-- Course detail START -->
+                        
+                        
+                        <img id ="project_img" src="" width="500" height="500" alt=''>
+                  
+                        
+                        
+                        <h5 class="mb-3">상세 모집내용</h5>
+                        <p id='descript_L'></p>                  
+                        <!--data[0].descript_L-->
+                        
+                        <!-- List content -->
+                        <h5 class="mt-4">문의이메일</h5>
+                        <p id='phone_num'></p>
+
+                        <h5 class="mt-4">해시태그</h5>
+                        <p id='tags'></p>
+
+                        <h5 class="mt-4">모집 인원</h5>
+                        <p id='team_max_num'></p>
+						 
+						<h5 class="mt-4">오픈채팅 링크</h5>
+						<p id="open_chat"></p>
+
+						<h5 class="mt-4">공모전 링크</h5>
+						<p id="contest_link"></p>
+
+                        <!-- Slider START -->
+                        <h5 class="mt-4">현재 참여중인 팀원</h5>
+						 <p id='present_team'></p>
+                        <p id='team_present_num'></p>
+                     
+                        
+                           
+                     
+                        <div id='team' class="row row-cols-1 row-cols-md-4 g-4">
+                           
+                        
+                        </div>
+
+                     
+                        
+                        
+
+                        <div id="change-button" class="d-flex justify-content-end mt-3">
+                             <button id="btnSubmit" href="#" type="button" class="btn btn-primary next-btn mb-0" data-bs-toggle="modal" data-bs-target="#">신청하기</button>
+                           
+			                   <button id="btnSave" class="btn btn-success mb-2 mb-sm-0" style="margin-left:10px">관심등록</button>
+							
+					
+                        
+                        </div>
+                        <!-- Course detail END -->
+                     </div>
+                     <!-- Content END -->
+
+                     
+                        
+                  </div>
+               </div>
+               <!-- Tab contents END -->
+            </div>
+         </div>
+         <!-- Main content END -->
+
+         
+
+      </div><!-- Row END -->
+   </div>
+</section>
+<!-- =======================
+Page content END -->
+
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+
+               
+<!-- Modal START -->
+<!-- Popup modal for add lecture START -->
+<div class="modal fade" id="likeProject" tabindex="-1" aria-labelledby="addLectureLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         
+         <div class="modal-body">
+            <form class="row text-start g-3">
+               <!-- Course name -->
+               <div class="col-12">
+                  <label class="form-label">관심 프로젝트로 등록되었습니다!</label><br>
+                  <a href="#">->관심 프로젝트 관리하러가기</a>  <!--관심프로젝트 링크-->
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">닫기</button>
+            <a href="main" type="button" class="btn btn-success my-0">메인으로 이동</a>  <!--메인 링크-->
+         </div>
+      </div>
+   </div>
+</div>
+
+   
+<!-- Popup modal for add lecture END -->
+   
+<div class="modal fade" id="failApplyProject" tabindex="-1" aria-labelledby="addLectureLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         
+         <div class="modal-body">
+            <form class="row text-start g-3">
+               <!-- Course name -->
+               <div class="col-12">
+                  <label class="form-label">마감된 프로젝트 입니다!</label><br>
+                  
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">닫기</button>
+            <a href="main" type="button" class="btn btn-success my-0">메인으로 이동</a>  <!--메인 링크-->
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Popup modal for add lecture END -->
+   
+   
+<!-- Popup modal for add lecture END -->
+   
+<div class="modal fade" id="successApplyProject" tabindex="-1" aria-labelledby="addLectureLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         
+         <div class="modal-body">
+            <form class="row text-start g-3">
+               <!-- Course name -->
+               <div class="col-12">
+                  <label class="form-label">신청 성공했습니다!</label><br>
+                  <a href="main">->다른 프로젝트 보러가기</a>
+                  
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">닫기</button>
+            <a href="main" type="button" class="btn btn-success my-0">메인으로 이동</a>  <!--메인 링크-->
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Popup modal for add lecture END -->      
+   
+<!-- Modal END -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<!-- Bootstrap JS -->
+<script src="/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Vendors -->
+<script src="/assets/vendor/tiny-slider/tiny-slider.js"></script>
+<script src="/assets/vendor/glightbox/js/glightbox.js"></script>
+<script src="/assets/vendor/choices/js/choices.min.js"></script>
+
+
+<!-- Template Functions -->
+<script src="/assets/js/functions.js"></script>
+
+</body>
+</html>

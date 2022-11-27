@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <title>Teampool-Just play and work with Teampool!</title>
+
+   <!-- Meta Tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <meta name="author" content="Webestica.com">
+   <meta name="description" content="Teampool-Just play and work with Teampool!">
+
+   <!-- Favicon -->
+   <link rel="shortcut icon" href="assets/images/avatar/teamPool.png">
+
+   <!-- Google Font -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+
+   <!-- Plugins CSS -->
+   <link rel="stylesheet" type="text/css" href="assets/vendor/font-awesome/css/all.min.css">
+   <link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+   <link rel="stylesheet" type="text/css" href="assets/vendor/tiny-slider/tiny-slider.css">
+   <link rel="stylesheet" type="text/css" href="assets/vendor/glightbox/css/glightbox.css">
+
+   <!-- Theme CSS -->
+   <link id="style-switch" rel="stylesheet" type="text/css" href="assets/css/style.css">
+   
+   <!--CSS only-->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+   <!--JavaScript Bundle with Popper-->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   <style>
+      .material-symbols-outlined {
+           font-variation-settings:
+           'FILL' 0,
+           'wght' 200,
+           'GRAD' -25,
+           'opsz' 40
+         }
+   </style>
+   <!-- ajax -->
+   <script>
+     function enterkey() {
+            if (window.event.key == 'Enter') {
+				//alert('Enter is pressed!');
+               window.event.preventDefault();
+               let search_input =  $('#search_input').val();
+         
+            let search_data ={'search_input':search_input}
+               $.ajax({
+                  'url':'/main/searchKeyword', //2. ajax를 통해 라우터에 연결.** 1차적으로 js에 보내는 것 **-정의 느낌은 아님. js에 이미 주소 정의되어 있음 post로 
+                  'type': 'post',
+                  'datatype': 'json',
+                  'data':search_data,
+                  'success': function(results){
+                     
+                      if (results.flag==1){
+                           localStorage.setItem("keyword",search_input );
+                            location.href='search_page';
+                           console.log('검색성공');
+                              
+                            }else{
+                               console.log('검색실패');
+                            }
+                     
+               
+            }
+         });   
+      }
+     }
+      //ajax
+      $(document).ready(function(){ //1.페이지가 실행되면
+        let user_id= window.localStorage.getItem("user_name");
+         if (user_id==null){
+            document.getElementById("head").style.display = 'none';
+            document.getElementById("no_login_head").style.display = 'block';
+            
+         }else{
+            document.getElementById("head").style.display = 'block';
+            document.getElementById("no_login_head").style.display = 'none';
+         }
+         let keyword = localStorage.getItem("keyword");
+        
+       
+            let search_data = { 'search_input': keyword }
+         
+        
+        let user_data={'user_id':user_id}
+         $.ajax({
+            'url':'/main/showProfile', //2. ajax를 통해 라우터에 연결.** 1차적으로 js에 보내는 것 **-정의 느낌은 아님. js에 이미 주소 정의되어 있음 post로 
+            'type': 'post',
+            'datatype': 'json',
+            'data':user_data,
+            'success': function(results){
+                let output = results.data[0];
+                let image;
+               if (output.user_image){
+                  console.log("이미지 있음");
+                  image= output.user_image;
+                   $('#photo').append(image);
+                    document.getElementById('photo').src= image;
+               }else{
+                  console.log("이미지 없음");
+                   image = "/images/default-profile.jpg";
+                   $('#photo').append(image);
+                    document.getElementById('photo').src= image;
+               }
+               
+               
+            }
+         });   
+         console.log(user_id);
+        
+         $.ajax({
+            'url':'/main/search_Keyword', //2. ajax를 통해 라우터에 연결.** 1차적으로 js에 보내는 것 **-정의 느낌은 아님. js에 이미 주소 정의되어 있음 post로 
+            'type': 'post',
+            'datatype': 'json',
+            'data':search_data,
+            'success': function(results){
+               //5. back-end에서 데이터 받아오기
+              
+               let data=results.data;
+               //console.log(data);
+               
+               $('#tableContent').text = '';
+               
+               //카테고리별 게시물 갯수 출력하기
+               // let count1=0;
+               // let count2=0;
+               // let count3=0;
+               // let count4=0;
+               // let count5=0;
+               
+               // for (let i=0; i<data.length; i++){
+               //    if (data[i].category === 1)
+               //       count1++;
+               //    else if (data[i].category === 2)
+               //       count2++;
+               //    else if (data[i].category === 3)
+               //       count3++;
+               //    else if (data[i].category === 4)
+               //       count4++;
+               //    else if (data[i].category === 5)
+               //       count5++;
+               // }
+               
+               $('#count1').text('"'+keyword+'"'+' 에 대한 '+data.length + '개의 검색결과를 찾았어요!');
+               // $('#count2').text(count2 + '개의 프로젝트');
+               // $('#count3').text(count3 + '개의 프로젝트');
+               // $('#count4').text(count4 + '개의 프로젝트');
+               // $('#count5').text(count5 + '개의 프로젝트');
+               //카테고리별 게시물 갯수 출력하기 END
+               
+               //게시물 목록 출력하기 
+               //카테고리별로 1,2,3,4,5
+            let agree_user;
+               for (let i=0; i<data.length; i++){
+               if(data[i].agree_user){
+                     let aaa = data[i].agree_user.split(",");
+                     agree_user= aaa.length;
+                     
+                  }else{
+                     agree_user=0;
+                  }
+                  
+                  
+                  let tmp='';
+                console.log(agree_user);
+                  
+                  tmp = tmp +'<div class="col-sm-6 col-lg-4 col-xl-3">' 
+                              +'<div class="card shadow h-100" id="card">'
+                              +   '<img src="'+ data[i].test_image +'" style="width-auto; height:300px;" class="card-img-top" alt="course image">'
+                                 +   '<div class="card-body pb-0">'
+                                    + '<div class="d-flex justify-content-between mb-2">'
+                                 +'<div class="badge bg-purple bg-opacity-10 text-purple" id="tags">'+ '#' + data[i].tags +'</div>'
+                              +'</div>'
+                              +'<h5 class="card-title fw-normal" id="title">'+'<a href="/main/post/' + data[i].project_id + '">'+ data[i].title +'</a>'+'</h5>'
+                              +'<p class="mb-0 text-truncate-5" id = "descript_S">'+ data[i].descript_S + '</p>'
+                              +'<div class="mt-3">' + '</div>'      
+                           +'</div>'
+                           +'<div class="card-footer pt-0 pb-3">'
+                              +'<div class="mt-3">' + '</div>'
+                                 +'<ul class="list-inline mb-0">'
+                                 +'<li class="list-inline-item me-0 small">'
+                  
+                  if (parseInt(agree_user+1) < data[i].team_max_num)
+                     if (data[i].status===1)
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fw-bold text-primary small me-2">'+ ' 마감' +'</i>'+'</h6>'
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                     else
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-success small me-2">'+ ' 참여중인 인원' +'</i>'+'</h6>'
+                                 +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_present_num">' + parseInt(agree_user+1) + '</li>'
+                                       +'/' +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_max_num">'+ data[i].team_max_num +'</li>' 
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+
+                  else
+                     if (data[i].status===1)
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fw-bold text-primary small me-2">'+ ' 마감' +'</i>'+'</h6>'
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                     else
+                        tmp = tmp +'<h6 class="mb-1 fw-normal">'+'<i class="fas fa-circle fw-bold text-danger small me-2">'+ ' 참여중인 인원' +'</i>'+'</h6>'
+                                 +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_present_num">' + parseInt(agree_user+1) + '</li>'
+                                       +'/' +'<li class="list-inline-item ms-2 h6 fw-light mb-0" id="team_max_num">'+ data[i].team_max_num +'</li>' 
+                                    +'</li>'
+                                    +'</ul>'
+                                    +'</div>'
+                                 +'</div>'
+                              +'</div>'
+                           +'</div>' <!-- Row END -->
+                        +'</div>';
+                  
+                  
+                  
+                  
+                     
+                  
+                   $('#card1').append(tmp);
+
+                  // if (data[i].category ===   1)
+                  //    $('#card1').append(tmp);
+                  // else if (data[i].category ===   2)
+                  //    $('#card2').append(tmp);
+                  // else if (data[i].category ===   3)
+                  //    $('#card3').append(tmp);
+                  // else if (data[i].category ===   4)
+                  //    $('#card4').append(tmp);
+                  // else if (data[i].category ===   5)
+                  //    $('#card5').append(tmp);
+                  
+               }
+               //게시물 목록 출력하기 END      
+            }
+         });   
+         
+         $('#logout').click(function () {
+            
+            
+            localStorage.removeItem("user_name");
+            clear()
+
+         })
+      });
+      
+      $(document).ready(function(){
+         let user_id= window.localStorage.getItem("user_name");
+         
+         $('#search_input_btn').click(function(){
+            let search_input =  $('#search_input').val();
+            let search_data ={'search_input':search_input}
+               $.ajax({
+                  'url':'/main/searchKeyword', //2. ajax를 통해 라우터에 연결.** 1차적으로 js에 보내는 것 **-정의 느낌은 아님. js에 이미 주소 정의되어 있음 post로 
+                  'type': 'post',
+                  'datatype': 'json',
+                  'data':search_data,
+                  'success': function(results){
+                     
+                      if (results.flag==1){
+                            localStorage.setItem("keyword",search_input );
+                           location.href='search_page';
+                           console.log('검색성공');
+                              
+                            }else{
+                               console.log('검색실패');
+                            }
+                     
+               
+            }
+         });   
+            
+            
+         })
+         
+         
+      });
+   </script>
+</head>
+   
+<body>
+   
+   
+<!-- Header START -->
+   <header id ="head" class="navbar-light navbar-sticky" style="display:none;">
+      <!-- Logo Nav START -->
+      <nav class="navbar navbar-expand-xl">
+         <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="main">
+               <img class="light-mode-item navbar-brand-item" style="width:80px;height:60px" src="assets/images/avatar/teamPool.png" alt="logo">
+               <img class="dark-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+               data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+               aria-label="Toggle navigation">
+               <span class="navbar-toggler-animation">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+               </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+               <!-- Nav Main menu START -->
+               <ul class="navbar-nav navbar-nav-scroll mx-auto">
+               </ul>
+               <!-- Nav Main menu END -->
+
+               <!-- Top bar right START -->
+               <div class="ms-xl-auto">
+                  <ul class="navbar-nav flex-row align-items-center">
+
+                     <!-- Profile dropdown START -->
+                     <li class="nav-item ms-2 ms-md-3 dropdown">
+                        <!-- Avatar -->
+                        <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button"
+                           data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                           <img id="photo" class="avatar-img rounded-circle" src="assets/images/avatar/pooh.jpeg"
+                              alt="avatar">
+                        </a>
+
+                        <!-- Profile dropdown START -->
+                        <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
+                           aria-labelledby="profileDropdown">
+
+                           <!-- Links -->
+                           
+                           <li><a class="dropdown-item" href="my_profile_view"><span
+                                     class="material-symbols-outlined">person_filled</span> 내 정보 보기</a></li>
+                           <li><a class="dropdown-item" href="my_profile_setting"><span
+                                     class="material-symbols-outlined">edit_square</span> 내 정보 수정</a></li>
+                           <li><a class="dropdown-item" href="my_project_setting"><span
+                                     class="material-symbols-outlined">web</span> 내가 개설한 프로젝트</a></li>
+                           <li><a class="dropdown-item" href="my_participating_project"><span
+                                     class="material-symbols-outlined">front_hand</span> 나의 참여 프로젝트</a></li>
+                           <li><a class="dropdown-item" href="interest"><span
+                                     class="material-symbols-outlined">bookmarks</span> 나의 관심 프로젝트</a></li>
+                              
+                           <li>
+                              <hr class="dropdown-divider">
+                           </li>
+                           <li><a id="logout" class="dropdown-item bg-danger-soft-hover" href="login"><i
+                                    class="bi bi-power fa-fw me-2"></i>로그아웃</a></li>
+
+
+
+                        </ul>
+                        <!-- Profile dropdown END -->
+                     </li>
+                     <!-- Profile dropdown END -->
+                  </ul>
+               </div>
+               <!-- Top bar right END -->
+            </div>
+         </div>
+      </nav>
+   
+      <!-- Logo Nav END -->
+   </header>
+   <!-- Header END -->
+      
+   <header id ="no_login_head" class="navbar-light navbar-sticky" style="display:none;">
+      <!-- Logo Nav START -->
+      <nav class="navbar navbar-expand-xl">
+         <div class="container">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="main">
+               <img class="light-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+               <img class="dark-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+               data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+               aria-label="Toggle navigation">
+               <span class="navbar-toggler-animation">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+               </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+               <!-- Nav Main menu START -->
+               <ul class="navbar-nav navbar-nav-scroll mx-auto">
+               </ul>
+               <!-- Nav Main menu END -->
+
+               <!-- Top bar right START -->
+               <div class="ms-xl-auto">
+                  <ul class="navbar-nav flex-row align-items-center">
+
+                     
+                        <!-- Avatar -->
+                        <a  href="login" id="profileDropdown" role="button"
+                           data-bs-auto-close="outside" data-bs-display="static"
+                           aria-expanded="false">
+                           로그인/회원가입
+                        </a>
+
+                        
+                  
+                  </ul>
+               </div>
+               <!-- Top bar right END -->
+            </div>
+         </div>
+      </nav>
+      <!-- Logo Nav END -->
+   </header>
+   <!-- Header END -->
+
+   <!-- **************** MAIN CONTENT START **************** -->
+   <main>
+
+      <!-- =======================
+
+
+      <!-- ======================= About START -->
+      <section class="pb-0 pb-lg-5">
+      </section>
+
+      <section>
+         <div class="container">
+            <!-- Title -->
+            <div class="row mb-4">
+               <div class="mx-auto">
+                  <!--검색-->
+                   <form class="col-lg-8 mx-auto d-flex" onsubmit="return false">
+                     <input id="search_input" onkeyup="enterkey();" style="border-radius: 20px 20px 20px 20px" class="mb-5 form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <a id="search_input_btn" href="#" class="mb-5 btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></a>
+                   </form>
+               
+
+            
+            <!-- Tabs content START 여기서부터  -->
+            <div class="tab-content" id="course-pills-tabContent">
+               <!--#개의 프로젝트-->
+            <!-- Content 1 START -->
+               
+               <div class="tab-pane fade show active" id="course-pills-tabs-1" role="tabpanel"
+                  aria-labelledby="course-pills-tab-1">
+                  <!--#개의 프로젝트-->
+                  <div class="d-sm-flex justify-content-sm-between align-items-center mb-4">
+                     <h5 class="mb-2 mb-sm-0" id="count1"></h5> <!--프로젝트 카운트수-->
+                  </div>
+                  <div class="row g-4" id = 'card1'>
+                     
+                  </div> <!-- Row END -->
+               </div>
+               <!-- Content1 END 여기까지만 신경쓰자 -->
+                     
+            </div>
+            <!-- Tabs content END -->
+         </div>
+            </div>
+         </div>
+      </section>
+      <!-- =======================
+Popular course END -->
+
+   </main>
+   <!-- **************** MAIN CONTENT END **************** -->
+
+   <!-- Back to top -->
+   <div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+   <!-- Bootstrap JS -->
+   <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+   <!-- Vendors -->
+   <script src="assets/vendor/tiny-slider/tiny-slider.js"></script>
+   <script src="assets/vendor/glightbox/js/glightbox.js"></script>
+   <script src="assets/vendor/purecounterjs/dist/purecounter_vanilla.js"></script>
+
+   <!-- Template Functions -->
+   <script src="assets/js/functions.js"></script>
+
+</body>
+
+</html>

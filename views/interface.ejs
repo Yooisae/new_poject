@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<script>
+    	$(document).ready(function(){
+    		var getCheck = RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^*()\-_=+\\\|\[\]{};:\'",.<>\/?]).{8,16}$/);
+
+    			console.log('start');
+  				$('#btnJoin').click(function(){
+
+  				 		$('.warning').text('');
+  				 		console.log('Join button clicked');
+
+   				 
+   				let studentID = $('#inputID').val();
+   				 		console.log(studentID);
+
+   			
+   				 let pw1 = $('#inputPw1').val();
+   				 console.log(pw1);
+
+   				 let pw2 = $('#inputPw2').val();
+   				 console.log(pw2);
+
+   				 let address = $('#inputAddress').val();
+   				 console.log(address);
+
+   				 let interests = $('input[name=interestsRadio]:checked').val();
+   				 console.log('interest:' + interests);  //값을 두개 합해서 보여줌. 
+
+   				 let major =  $('#inputMajor').val();
+   				 console.log('major:' + major);
+					
+				let flag = 0;
+
+   				 if (studentID){
+   				 	console.log('studentID okay');
+   				 }else{ 
+   				 	console.log('no studentID');
+   				 	$('#warning1').text('ID를 입력하지 않았습니다!');
+					 flag =1;
+   				 }
+
+   				 if (pw1 === pw2){
+   				 	console.log('password okay');
+   				 }else{ 
+					console.log('password unmatched');
+						$('#warning2').text('패스워드가 다릅니다.확인해주세요!');
+					    flag =1;
+					}
+
+					if(pw1&&pw2){
+
+					}else{
+					console.log('password중 하나가 없어요');
+					$('#warning2').text('패스워드 중 하나가 없어요');
+						 flag =1;
+					}
+					if (interests){
+					console.log('관심분야 선택됐어요');
+
+					}else{
+					console.log('관심분야 선택 안 됐어요');
+					$('#warning3').text('관심분야를 선택해주세요!');
+						 flag =1;
+
+
+					}
+
+					
+					if (address) {
+
+					}else{
+						console.log('address가 없어요');
+						$('#warning5').text('주소가 입력되지 않았습니다.');
+						 flag =1;
+					}
+					if(!getCheck.test($("#inputPw1").val()))
+						{ 
+							$('#warning2').text('영문 대문자와 소문자, 숫자, 특수문자를 하나 이상 포함하여 8~16자 형식에 맞게 입력해주세요');
+							 flag =1;
+						}else{
+							
+						}
+					let data = {'studentID':studentID,
+								    'pw':pw1,
+								    'address':address,
+									'major':major,
+									'interests':interests
+								
+							   }
+					//error가 없으면...
+   					if (flag == 0){
+						 $.ajax({
+							 'url': '/interfaceUpdate',
+							 'type':'post',
+							 'datatype':'json',
+							 'data': data,
+							 'success':function(results){
+								 console.log(results.message);
+								  console.log(results.flag);
+								 if (results.flag==1){
+									 $('#results').text('성공적으로 저장되었습니다.');
+								 }else{
+									 $('#results').text('실패했습니다.');
+								 }
+							 }
+								  
+						 });
+						
+				 	}
+  		});
+});
+    </script>
+</head>
+	<body>
+		<form class="row g-3 p-5">
+			    <!--ID-->
+  				<div class="row pb-3">
+    				<label for="inputID" class="form-label col-2">Student ID</label>
+  				
+  					<div class="col-10">
+  						<input type="text" class="form-control" id="inputID" style="width:100px;">
+  						<div id="warning1" class="warning text-danger"></div>
+  					</div>
+
+  					
+  				</div>
+  				<!--PASSWORD-->
+  				<div class="row">
+  					
+    				<label for="inputPW" class="form-label col-2">Password</label>
+    			
+    				<div class="col-10 pb-3">
+    					<div class="pb-1">
+    						<input type="password" class="form-control me-2" id="inputPw1" style="width:100px;display: inline-block;">
+    						<div id="emailHelp" class="form-text" style="display: inline-block;">8~16자 영문 대소문자,숫자,특수문자를 사용하세요.</div>
+  						</div>
+    					
+    					<div>
+    						<input type="password" class="form-control" id="inputPw2" style="width:100px;">
+    						<div id="warning2" class="warning text-danger"></div>
+  						</div>
+
+    				</div>
+    					
+  					</div>
+  					
+
+  
+  <div class="row pb-3">
+	    <label for="inputAddress" class="form-label col-2" style="display: inline-block;">Address</label>
+	    <div class="col-10">
+	    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" style="display:inline-block;width: 1000px;">
+		</div>
+		<div id="warning5" class="warning text-danger" style="margin-left:200px"></div>
+  					
+	</div>
+  
+  
+   <div class="row pb-3">
+    <label for="inputMajor" class="form-label col-2">Major</label>
+    <div class="col-10" style="width:300px">
+	    <select id="inputMajor" class="form-select" name="major">
+	      <option selected>Choose...</option>
+	      <option value='1'>ICT창업학부</option>
+	      <option value='2'>경영경제학부</option>
+	      <option value='3'>상담심리사회복지학부</option>
+	      <option value='4'>콘텐츠융합디자인학부</option>
+	      <option value='5'>전산전자공학부</option>
+	      <option value='6'>생명공학부</option>
+	      <option value='7'>ooo학부</option>
+	      <option value='8'>ooo학부</option>
+	    </select>
+	</div>
+	<div id="warning4" class="warning text-danger" style="margin-left: 200px;"></div>
+  					
+   </div>
+
+  <div class="row pb-3">
+  		<label for="inputState" class="form-label col-2">Note</label>
+  		<div class="form-floating col-10" style="width:1000px">
+  				<textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+  				
+  		</div>
+  </div>
+
+  <div class="row">
+  	<div class="col-2">
+  		<label for="inputState" class="form-label col-4">관심분야</label>
+  	</div>
+  	<div class="form-check col-10">
+	  		<input class="form-check-input" type="radio" name="interestsRadio" value="1" id="radio1">
+	  		<label class="form-check-label" for="radio1">
+	    		Front-End
+	  		</label>
+
+	  <div>
+	  		<input class="form-check-input" type="radio" name="interestsRadio" value="2" id="radio2">
+	  		<label class="form-check-label" for="radio2">
+	    		Back-End
+	  		</label>
+	  </div>
+	  <div>
+	  		<input class="form-check-input" type="radio" name="interestsRadio" value="3" id="radio3">
+	  		<label class="form-check-label" for="radio3">
+	    		Both
+	  		</label>
+	  		<div>
+	  			<div id="warning3" class="warning text-danger"></div>
+	  		</div>
+	  </div>  
+	</div>
+	</div>
+
+  	<div class="row">
+    	<button type="button" id="btnJoin" class="btn btn-primary col-2" style="width:80px">Join</button>
+    	<button type="button" id="btnCancel" class="btn btn-Danger col-2" style="width:100px;margin-left: 5px;">Cancel</button>
+  	</div>
+			
+			<div id="results"> </div>
+	</form>
+
+
+	</body>
+
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset = "UTD-8">
+		<meta http-equiv = "X-UA-Compatible" content = "IE-edge">
+		<meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+	</head>
+	<body>
+		<h4>
+			채팅페이지
+		</h4>
+		<button id = "send" onclick = "socket.send('test')">
+			보내기
+		</button>
+		<script>
+			let socket = new WebSocket("ws://localhost:3000");
+		</script>
+	</body>
+</html>

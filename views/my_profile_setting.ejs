@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Teampool-Just play and work with Teampool!</title>
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Teampool-Just play and work with Teampool!">
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="assets/images/avatar/teamPool.png">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+
+	<!-- Plugins CSS -->
+	<link rel="stylesheet" type="text/css" href="assets/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+
+	<!-- Theme CSS -->
+	<link id="style-switch" rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+	<!-- JavaScript -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+		.material-symbols-outlined {
+			  font-variation-settings:
+			  'FILL' 0,
+			  'wght' 200,
+			  'GRAD' -25,
+			  'opsz' 40
+			}  
+    </style>
+	<script>
+		
+		document.addEventListener('DOMContentLoaded', function(){
+    //이미지 객체 타입으로 이미지 확장자 밸리데이션
+    var validateType = function(img){
+        return (['image/jpeg','image/jpg','image/png'].indexOf(img.type) > -1);
+    }
+
+    var validateName = function(fname){
+        let extensions = ['jpeg','jpg','png'];
+        let fparts = fname.split('.');
+        let fext = '';
+    
+        if(fparts.length > 1){
+            fext = fparts[fparts.length-1];
+        }
+    
+        let validated = false;
+        
+        if(fext != ''){
+            extensions.forEach(function(ext){
+                if(ext == fext){
+                    validated = true;
+                }
+            });
+        }
+    
+        return validated;
+    }
+
+    // 파일 선택 필드에 이벤트 리스너 등록
+    document.getElementById('inputImage').addEventListener('change', function(e){
+        let elem = e.target;
+        if(validateType(elem.files[0])){
+            let preview = document.querySelector('.thumb');
+            preview.src = URL.createObjectURL(elem.files[0]); //파일 객체에서 이미지 데이터 가져옴.
+            preview.onload = function() {
+                URL.revokeObjectURL(preview.src); //URL 객체 해제
+            }
+        }else{
+        console.log('이미지 파일이 아닙니다.');
+        }
+    });
+
+    
+	});
+
+		   
+	
+		//ajax
+		$(document).ready(function () {//1. 페이지가 실행되면
+			let user_id = localStorage.getItem("user_name");
+			let user_data = { 'user_id': user_id }
+			$.ajax({
+				'url': '/my_profile_view/showDataList',//2. ajax를 통해 라우터에 연결
+				'type':'post',
+				'datatype':'json',
+				'data':user_data,
+				'success':function(results){
+					//5. back-end에서 데이터 받아오기
+					console.log(results.data);
+					//6. 데이터를 출력하기
+					let output;
+					 output = results.data;
+					 
+								  
+								 let nickname;
+								 nickname = output[0].nickname;
+								 console.log(nickname);  //값을 못받아오고 있넹. title먼저 정의하고 가져와야됨. 그리고 한줄만 받아와도 인덱스0으로 가져오기.
+								 
+								 let age;
+								 age = output[0].age;
+								 console.log(age);
+								 
+								let phone;
+								 phone = output[0].phone;
+								 console.log(phone);
+					
+								let photo;
+					            if(output[0].user_image){
+									photo = output[0].user_image;
+									
+										$('#profile').append(photo);
+									document.getElementById('profile').src=photo;
+								}else{
+									photo = "/images/default-profile.jpg";
+									$('#profile').append(photo);
+									document.getElementById('profile').src=photo;
+								}
+								
+					
+					
+				
+					           
+								let mbti;
+								mbti = output[0].mbti;
+								 console.log(mbti);
+					
+								<!--ISTJ ISFJ INFJ INTJ ISTP ISFP INFP INTP ESTP ESFP ENFP ENTP ESTJ ESFJ ENFJ ENTJ-->
+								 
+								 let position;
+								 position = output[0].position;
+								console.log(position);
+					
+								let introduction;
+								 introduction = output[0].introduction;
+								 
+								 let Major;
+								 
+								 Major = output[0].major;
+								 
+								 let portfolio_name;
+								 
+								 portfolio_name = output[0].portfolio_name;
+								 
+								 let portfolio_detail;
+								 
+								 portfolio_detail = output[0].portfolio_detail;
+					
+								let project_history;
+							 	project_history = output[0].project_history;
+					
+								let club;
+								club = output[0].club;
+					
+								let portfolio_link;
+								portfolio_link= output[0].link_portfolio;
+					
+
+								let history_arr;
+					            
+					           if(project_history==undefined){
+								   
+							   }else{
+								   if(project_history.includes(',')){
+									   history_arr = project_history.split(',');
+									   
+									   for(let i=0;i<history_arr.length;i++){							
+											   console.log("반복해서 넣기");
+										   
+										   if(history_arr[i]==''){
+											   
+										   }else{
+											  $('.test_project_history').append(
+											   '<input type="text" name="inputProject" rows="3" value="'+history_arr[i]+'" class = "col-6 mb-2" style = "height:30px;">' 
+												+'<input type="button" class="remove_history col-1 mb-2" value="Remove" style = "height:30px; margin-left:5px;">'
+												+'<br>'
+												); 
+										   }
+										    
+										  
+									   };
+									   $('.remove_history').click( function () { 
+											$(this).prev().remove(); // remove the textbox
+											$(this).next().remove(); // remove the <br>
+											$(this).remove(); // remove the button
+										});
+
+									   
+								   }else{
+									   
+										    history_arr = project_history;
+									    $('.test_project_history').append(
+											 '<input type="text" name="inputProject" rows="3" value="'+history_arr+'" class = "col-6 mb-2" style = "height:30px;">' 
+												+'<input type="button" class="remove_history col-1 mb-2" value="Remove" style = "height:30px; margin-left:5px;">'
+												+'<br>'
+											
+										
+										);
+									   $('.remove_history').click( function () { 
+											$(this).prev().remove(); // remove the textbox
+											$(this).next().remove(); // remove the <br>
+											$(this).remove(); // remove the button
+										});
+									   
+									  
+								   }
+							   }
+					
+					
+								 
+								  $('#inputnickname').text='';
+								$('#photo').text='';
+								 $('#inputage').text='';
+								 $('#inputphone').text='';
+								  $('#inputmbti').text='';
+								 $('#inputposition').text='';
+								$('#inputintroduction').text='';
+								 $('#inputcertification').text='';
+								$('#inputportfolio_name').text='';
+								$('#inputportfolio_detail').text='';
+					            $('#inputProject').text='';
+								$('#inputClub').text='';
+					            
+							//기존 db에 저장되어 있는 사용자 정보를 불러옴
+								$('#inputnickName').val(nickname);
+								$('#photo').append(photo);
+								 $('#inputAge').val(age);
+								 $('#inputPhone').val(phone);
+								  $('#inputMbti').val(mbti);
+								 $('#inputPosition').val(position);	
+								$('#inputIntroduction').val(introduction);
+								 $('#inputMajor').val(Major);
+								$('#inputPortfolio_name').val(portfolio_name);
+								$('#inputPortfolio_detail').val(portfolio_detail);
+								$('#inputClub').val(club);
+								$('#inputLink').val(portfolio_link);
+					
+					
+								// $('#inputProject').val(project_history);
+								document.getElementById('photo').src=(photo)
+
+								 
+				}
+			});
+		});
+		
+		
+		
+		$(document).ready(function () {
+			
+			console.log('start');
+			<!--프로젝트 동적으로 추가하는 시작-->
+			$('.add_history').click(function(){
+				let text = $('#career').val();
+				$('#career').text(''); //이거 실행 안되ㅁ
+				$('.test_project_history').append(
+				    '<input type="text" name="inputProject" rows="3" value ="' + text + '" style = "height:30px;" class = "col-6 mb-2"><input type="button" class="remove_history col-1 mb-2" value="Remove" style = "height:30px; margin-left:5px;"><br>'	
+				);
+									
+				// $('.test_project_history').prepend(
+				// 	'<input placeholder="예시프로젝트-예시역할" type="text" name="inputProject" rows="3" id = "career"> <input type="button" class="add_history" value="Add"><br>'
+				// );
+				$('.remove_history').click( function () { 
+                    $(this).prev().remove(); // remove the textbox
+                    $(this).next().remove(); // remove the <br>
+                    $(this).remove(); // remove the button
+                });
+				
+				
+			});
+			<!---끝---->
+			
+        
+			<!--프로젝트 동적으로 삭제하는거 끝>
+			$('#btnSave').click(function () {
+				let user_id = localStorage.getItem("user_name");
+				$('.warning').text('');
+				console.log('저장 button clicked');
+				
+				
+				let nickname = $('#inputnickName').val();
+				console.log(nickname);
+				
+				let age = $('#inputAge').val();
+				console.log(age);
+				
+				let phone = $('#inputPhone').val();
+				console.log(phone);
+				
+				let mbti = $('#inputMbti').val();
+				console.log(mbti);
+				
+				let position = $('#inputPosition').val();
+				console.log(position);
+				
+				let introduction = $('#inputIntroduction').val();
+				console.log(introduction);
+				
+				let Major = $('#inputMajor').val();
+				console.log(Major);
+				
+				let portfolio_name = $('#inputPortfolio_name').val();
+				console.log(portfolio_name);
+				
+				let portfolio_detail = $('#inputPortfolio_detail').val();
+				console.log(portfolio_detail);
+				
+				let portfolio_file = $('#inputPortfolio_file').val();
+				console.log(portfolio_file);
+				
+				let project = $('#inputProject').val();
+				
+				let link_portfolio = $('#inputLink').val();
+				
+				let club = $('#inputClub').val();
+				
+				let semester = $('#inputsemester').val();
+				console.log(semester);
+
+				
+				
+				let flag=0;
+
+				if (nickname) {
+					console.log('nickName okay');
+				}
+				else {
+					console.log('no nickName');
+					$('#warning1').text('닉네임은 필수입력사항입니다!');
+					flag=1;
+				}
+				if (phone) {
+					console.log('phone okay');
+				}
+				else {
+					console.log('no phone');
+					$('#warning2').text('연락처는 필수입력사항입니다!');
+					flag=1;
+				}
+				if (Major){
+					
+				}else{
+					$('#warning3').text('전공은 필수입력사항입니다!');
+					flag=1;
+				}
+				
+			
+				
+				
+				
+				
+				//이미지를 수정했으면
+				 // if($('#inputImage')[0].files[0]){
+				 // let imageInfo = $('#inputImage')[0].files[0];
+				    // console.log(imageInfo);
+				    // let render = new FileReader();
+				    // render.readAsDataURL(imageInfo);
+	
+				    // let imgString='';
+					 // render.onloadend = function () {  //이게 애초에 render가 있다는 가정하에 진행되니까,if문 큰거를 넣기
+					 // imgString = render.result;
+					 // console.log(imgString);
+						// let data = {
+						// 'id':user_id,
+						// 'nickname': nickname,
+						// 'age': age,
+						// 'phone': phone,
+						// 'mbti': mbti,
+						// 'position': position,
+						// 'introduction': introduction,
+						// 'major': Major,
+						// 'portfolio_name': portfolio_name,
+						// 'portfolio_detail': portfolio_detail,
+						// 'portfolio_file': portfolio_file,
+						// 'photo': imgString,
+						// 'project_history':project
+						// }
+				   
+			     var form = $('#join-form')[0];
+			     var formData = new FormData(form);
+			     console.log(formData,"폼데이터 출력출력");
+			     formData.append('user_id', user_id);
+
+							if (flag == 0) {
+								$.ajax({
+									'url': '/my_profile_setting/profileUpdate',
+									'type': 'post',
+									//'datatype': 'json',
+									'contentType': false,
+                 					'processData': false,
+									'data': formData,
+									'success': function (results) {
+										console.log(results.message);
+										console.log(results.flag);
+										if (results.flag == 1) {
+											$('#results').text('성공적으로 저장되었습니다.');
+											location.href="my_profile_view"
+										} else {
+											$('#results').text('실패했습니다.');
+										}
+									}
+
+								});
+
+							}
+
+						// }
+					 //이미지를 수정하지 않았을 경우
+				 // }
+				// else{
+				// 	 let imgString= document.getElementById('photo').src;
+				// 	    let data = {
+				// 			'id':user_id,
+				// 			'nickname': nickname,
+				// 			'age': age,
+				// 			'phone': phone,
+				// 			'mbti': mbti,
+				// 			'position': position,
+				// 			'introduction': introduction,
+				// 			'major': Major,
+				// 			'portfolio_name': portfolio_name,
+				// 			'portfolio_detail': portfolio_detail,
+				// 			'portfolio_file': portfolio_file,
+				// 			'photo': imgString,
+				// 			'project_history':project
+				// }
+				// 		if (flag == 0) {
+				// 				$.ajax({
+				// 					'url': '/my_profile_setting/profileUpdate',
+				// 					'type': 'post',
+				// 					'datatype': 'json',
+				// 					'data': data,
+				// 					'success': function (results) {
+				// 						console.log(results.message);
+				// 						console.log(results.flag);
+				// 						if (results.flag == 1) {
+				// 							$('#results').text('성공적으로 저장되었습니다.');
+				// 							location.href="my_profile_view"
+				// 						} else {
+				// 							$('#results').text('실패했습니다.');
+				// 						}
+				// 					}
+
+				// 				});
+
+				// 			}
+				//  }
+			
+					
+			
+                
+            });
+        });
+			
+	</script>
+</head>
+
+<body>
+
+		<!-- Header START -->
+	<header class="navbar-light navbar-sticky">
+		<!-- Logo Nav START -->
+		<nav class="navbar navbar-expand-xl">
+			<div class="container">
+				<!-- Logo START -->
+				<a class="navbar-brand" href="main">
+					<img class="light-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+					<img class="dark-mode-item navbar-brand-item" src="assets/images/avatar/teamPool.png" alt="logo">
+				</a>
+				<!-- Logo END -->
+
+				<!-- Responsive navbar toggler -->
+				<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse"
+					data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-animation">
+						<span></span>
+						<span></span>
+						<span></span>
+					</span>
+				</button>
+
+				<!-- Main navbar START -->
+				<div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+					<!-- Nav Main menu START -->
+					<ul class="navbar-nav navbar-nav-scroll mx-auto">
+					</ul>
+					<!-- Nav Main menu END -->
+
+					<!-- Top bar right START -->
+					<div class="ms-xl-auto">
+						<ul class="navbar-nav flex-row align-items-center">
+
+							<!-- Profile dropdown START -->
+							<li class="nav-item ms-2 ms-md-3 dropdown">
+								<!-- Avatar -->
+								<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button"
+									data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown"
+									aria-expanded="false">
+									<img id="profile" class="avatar-img rounded-circle" src="assets/images/avatar/pooh.jpeg"
+										alt="avatar">
+								</a>
+
+								<!-- Profile dropdown START -->
+								<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3"
+									aria-labelledby="profileDropdown">
+
+									<!-- Links -->
+									
+									<li><a class="dropdown-item" href="my_profile_view"><span
+ 												class="material-symbols-outlined">person_filled</span> 내 정보 보기</a></li>
+									<li><a class="dropdown-item" href="my_profile_setting"><span
+ 												class="material-symbols-outlined">edit_square</span> 내 정보 수정</a></li>
+									<li><a class="dropdown-item" href="my_project_setting"><span
+ 												class="material-symbols-outlined">web</span> 내가 개설한 프로젝트</a></li>
+									<li><a class="dropdown-item" href="my_participating_project"><span
+ 												class="material-symbols-outlined">front_hand</span> 나의 참여 프로젝트</a></li>
+									<li><a class="dropdown-item" href="interest"><span
+ 												class="material-symbols-outlined">bookmarks</span> 나의 관심 프로젝트</a></li>
+										
+									<li>
+										<hr class="dropdown-divider">
+									</li>
+									<li><a id="logout" class="dropdown-item bg-danger-soft-hover" href="login"><i
+												class="bi bi-power fa-fw me-2"></i>로그아웃</a></li>
+
+
+
+								</ul>
+								<!-- Profile dropdown END -->
+							</li>
+							<!-- Profile dropdown END -->
+						</ul>
+					</div>
+					<!-- Top bar right END -->
+				</div>
+			</div>
+		</nav>
+		<!-- Logo Nav END -->
+	</header>
+	<!-- Header END -->
+		
+
+	<!-- **************** MAIN CONTENT START **************** -->
+	<main>
+
+		<!-- =======================
+Page Banner START -->
+		<section class="pt-0">
+			<!-- Main banner background image -->
+			<div class="container-fluid px-0">
+				<div class="bg-blue h-100px h-md-200px rounded-0"
+					style="background:url(assets/images/pattern/04.png) no-repeat center center; background-size:cover;">
+				</div>
+			</div>
+			<div class="container mt-n4">
+				<div class="row">
+					<!-- Profile banner START -->
+					<div class="col-12">
+						<div class="card bg-transparent card-body p-0">
+							<div class="row d-flex justify-content-between">
+								<!-- Avatar -->
+								<div class="col-auto mt-4 mt-md-0">
+
+								</div>
+								<!-- Profile info -->
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Profile banner END -->
+
+						<!-- Advanced filter responsive toggler START -->
+						<!-- Divider -->
+						<hr class="d-xl-none">
+						<div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
+							<a class="h6 mb-0 fw-bold d-xl-none" href="#">Menu</a>
+							<button class="btn btn-primary d-xl-none" type="button" data-bs-toggle="offcanvas"
+								data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+								<i class="fas fa-sliders-h"></i>
+							</button>
+						</div>
+						<!-- Advanced filter responsive toggler END -->
+
+			</div>
+		</section>
+		<!-- =======================
+Page Banner END -->
+
+		<!-- =======================
+Page content START -->
+		<section class="pt-0">
+			<div class="container">
+				<div class="row">
+					<!-- Main content START -->
+					<div class="col-xl-9">
+						<!-- Edit profile START -->
+						<div class="card bg-transparent border rounded-3">
+							<!-- Card header -->
+							<div class="card-header bg-transparent border-bottom">
+								<h3 class="card-header-title mb-0">프로필 수정</h3>
+							</div>
+							<!-- Card body START -->
+							<div class="card-body">
+								<!-- Form -->
+								<iframe id="iframe1" name="iframe1" style="display:none"></iframe>
+								<form class="row g-4" id="join-form" method="post" enctype="multipart/form-data" target="iframe1" >
+                                   
+									   
+									<!-- Profile picture -->
+									<div class="col-12 justify-content-center align-items-center">
+										<label class="form-label">사진</label>
+										<div class="d-flex align-items-center">
+											<label class="position-relative me-4" for="inputImage"
+												title="Replace this pic">
+												<!-- Avatar place holder -->
+												<span class="avatar avatar-xl">
+													<img id="photo" name="photo"
+														class="thumb avatar-img rounded-circle border border-white border-3 shadow"
+														src="#" alt="">
+												</span>
+												<!-- Remove btn -->
+												<!-- <button type="button" class="uploadremove"><i class="bi bi-x text-white"></i></button> -->
+											</label>
+											<!-- Upload button -->
+											<label class="btn btn-primary-soft mb-0" for="inputImage">사진 변경</label>
+											<input id="inputImage" name="inputImage" class="hidden_input form-control d-none" type="file" name ="inputImage" accept="image/*" onchange="">
+										</div>
+										</div>
+								
+
+
+									<!-- 닉네임 -->
+									<div class="col-md-6">
+										<label for="inputnickName" class="form-label">닉네임</label>
+										<span style="color: red;">*</span>
+										<input id="inputnickName" name="inputnickName" class="form-control" id="inputnickName" type="text"
+											placeholder="이름">
+										<div id="warning1" class="warning text-danger"></div>
+									</div>
+
+									<!-- 나이 -->
+									<div class="col-md-6">
+										<label for="inputAge" class="form-label">나이</label>
+										<input id="inputAge" name="inputAge" class="form-control" type="text" value="22" placeholder="나이">
+									</div>
+
+									<!-- 전화번호 -->
+									<div class="col-md-6">
+										<label for="inputPhone" class="form-label">이메일 주소</label>
+										<span  style="color: red;">*</span>
+										<input type="text" name="inputPhone" class="form-control" id="inputPhone" value="skdflk@gmail.com"
+											placeholder="sdlfj@gmail.com">
+										<div id="warning2" class="warning text-danger"></div>
+									</div>
+
+									<!-- MBTI -->
+									<!-- <div class="col-md-6">
+										<label class="form-label">MBTI</label>
+										<input class="form-control" type="text" value="ESTP">
+									</div> -->
+									<!--MBTI-->
+									<div class = 'row mt-2'>
+										<div class="col-4">
+										  <label for="inputMbti" class="form-label"><b>MBTI</b></label>
+										  <input id="inputMbti" name="inputMbti" type="text" class="form-control"style="width:200px;">
+										</div>
+										<div class="col-4">
+										  <label for="inputsemester" class="form-label"><b>학기수</b></label>
+										  <select id="inputsemester" name = "inputsemester" class="form-select js-choice z-index-9" aria-label=".form-select-sm" type='text' name="teamNumber">
+											  <option value="Number"></option>
+											   <option value='direct'>직접입력</option>
+											  <option value='1'>1</option>
+											  <option value='2'>2</option>
+											  <option value='3'>3</option>
+											  <option value='4'>4</option>
+											  <option value='5'>5</option>
+											  <option value='6'>6</option>
+											  <option value='7'>7</option>
+											  <option value='8'>8</option>
+											  <option value='9'>9</option>
+											  <option value='10'>10</option>
+											  <option value='11'>11</option>
+											  <option value='12'>12</option>
+											  <option value='13'>13</option>
+											  <option value='14'>14</option>
+										   </select>
+										</div>
+									</div>
+									
+								
+									<!-- Full name -->
+									<div class="col-12">
+										<label for="inputPosition" class="form-label">선호하는 포지션</label>
+										<div class="input-group">
+											<input id="inputPosition" name="inputPosition" type="text" class="form-control">
+										</div>
+									</div>
+
+									<!-- About me -->
+									<div class="col-12">
+										<label for="inputIntroduction" class="form-label">본인소개</label>
+										<textarea id="inputIntroduction" name="inputIntroduction" type="text" class="form-control"
+											rows="3" placeholder="저는 열정으로 무장한 사람이고, 새로운 일에 도전하는 것을 좋아합니다.">I’ve found a way to get paid for my favorite hobby, and do so while following my dream of traveling the world.</textarea>
+										<div class="form-text">자신을 나타낼 수 있는 소개를 자세히 적어주세요.</div>
+									</div>
+
+									<!-- Education -->
+									<div class="col-12">
+										<label for="inputMajor" class="form-label">전공학과</label><span  style="color: red;">*</span>
+										<textarea id="inputMajor" name="inputMajor" type="text" class="form-control"
+											rows="3" placeholder="경영학,ict융합">경영학,ict융합</textarea>
+										<div class="form-text">전공을 입력해주세요.ex) 경영학/ict융합</div>
+										<div id="warning3" class="warning text-danger"></div>
+									</div>
+									
+									<div class="col-12">
+										<label for="inputClub" class="form-label">소속 되어있는 단체/동아리</label>
+										<div class="input-group">
+											<input id="inputClub" name="inputClub" type="text" class="form-control">
+										</div>
+										<div class="form-text">소속 되어있는 단체나 동아리를 입력해주세요.ex) IVF/컬러즈/한동냥</div>
+									</div>
+									
+									
+									
+									
+									<div class="col-12">
+										<label for="inputProject" class="form-label">프로젝트 이력</label>
+										 <div class="test_project_history">            
+											<input placeholder="예시프로젝트-예시역할" type="text" name="inputProject" rows="3" id = "career" class = "history col-6 mb-2" style = 'height:30px;'> <input type="button" class="add_history col-1 mb-2" style = 'height: 30px;' value="Add"><br>
+					
+										</div> 
+									</div>
+									 
+									<div class="form-text">프로젝트이름-역할을 적어주세요.프로젝트1-역할</div>
+									
+									<!-- <div class="col-12">
+										<label for="inputProject" class="form-label">참여 프로젝트 이력</label>
+										<textarea id="inputProject" name="inputProject" type="text" class="form-control"
+											rows="3">참여프로젝트 - 프로젝트매니저 </textarea>
+										<div class="form-text">프로젝트이름-역할을 적어주세요.프로젝트1-역할/프로젝트2-역할</div>
+									</div> -->
+									
+									<div class="col-12">
+										<label for="inputLink" class="form-label">포트폴리오 링크</label>
+										<textarea id="inputLink" name="inputLink" type="text" class="form-control"
+											rows="3"></textarea>
+										<div class="form-text">자신을 나타낼만한 사이트가 있다면 주소를 복사해 입력해주세요.ex) 깃허브, 블로그 주소 등</div>
+									</div>
+									
+									<!--프로젝트 이력 동적 추가--->
+										<!-- <div class="col-12">
+											<label for="inputProject" class="form-label">프로젝트 이력</label>
+										  </div> -->
+									
+										<!-- <div class="test_project_history col-12">
+											<div class="col-md-4"style="float:left">
+												<input type="text" class="form-control" id="text" placeholder="text">
+											  </div>
+											  <div class="col-md-8" style="float:right">
+												  <button type="button" class="add_history btn btn-success mb-0">추가하기</button><br> 
+											
+											</div>
+										</div>  -->
+									<!----끝--->
+										  
+								 <!-- <div class="test_project_history">            
+										<input type="text" name="txt"> <input type="button" class="add_history" value="Add"><br>        
+								</div>     -->
+									
+								
+								
+								
+									<!-- Save button -->
+									<div class="d-sm-flex justify-content-end">
+										<div id="btnSave" class="btn btn-primary mb-0">저장</div>	
+									</div>
+								</form>
+							</div>
+							<!-- Card body END -->
+						</div>
+						<!-- Edit profile END -->
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+	<!-- **************** MAIN CONTENT END **************** -->
+
+
+	<!-- Back to top -->
+	<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+	<!-- Bootstrap JS -->
+	<script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Template Functions -->
+	<script src="assets/js/functions.js"></script>
+
+</body>
+
+</html>
